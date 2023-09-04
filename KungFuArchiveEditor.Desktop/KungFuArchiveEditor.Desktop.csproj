@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\KungFuArchiveEditor\Assets\avalonia-logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

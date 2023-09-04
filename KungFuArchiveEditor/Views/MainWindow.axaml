@@ -14,7 +14,8 @@
 	<DockPanel>
 		<Menu DockPanel.Dock="Top" Background="Lavender">
 			<MenuItem Header="{x:Static assets:LangResources.MenuFile}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
+						  Command="{Binding OpenFileAction}"/>
 				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"/>
 				<Separator/>
 				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>

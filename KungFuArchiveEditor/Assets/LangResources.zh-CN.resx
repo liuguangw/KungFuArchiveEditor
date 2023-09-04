@@ -165,4 +165,10 @@
   <data name="SaveText" xml:space="preserve">
     <value>保存</value>
   </data>
+  <data name="OpenArchiveFile" xml:space="preserve">
+    <value>打开存档文件</value>
+  </data>
+  <data name="ArchiveFile" xml:space="preserve">
+    <value>存档文件</value>
+  </data>
 </root>

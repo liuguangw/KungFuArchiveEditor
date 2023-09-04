@@ -166,4 +166,10 @@
   <data name="SaveText" xml:space="preserve">
     <value>save</value>
   </data>
+  <data name="OpenArchiveFile" xml:space="preserve">
+    <value>open archive file</value>
+  </data>
+  <data name="ArchiveFile" xml:space="preserve">
+    <value>archive file</value>
+  </data>
 </root>

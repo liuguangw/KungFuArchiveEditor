@@ -31,17 +31,5 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
     </AvaloniaResource>
-    <AvaloniaResource Update="Assets\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Assets\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Assets\Resources.zh-CN.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </AvaloniaResource>
   </ItemGroup>
 </Project>
