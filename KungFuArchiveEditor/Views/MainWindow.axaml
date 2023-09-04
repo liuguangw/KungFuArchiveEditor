@@ -1,0 +1,39 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+        xmlns:views="clr-namespace:KungFuArchiveEditor.Views"
+		xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+        mc:Ignorable="d" Width="640" Height="480"
+        x:Class="KungFuArchiveEditor.Views.MainWindow"
+		WindowStartupLocation="CenterScreen"
+        Icon="/Assets/avalonia-logo.ico"
+		x:DataType="vm:MainViewModel"
+        Title="{x:Static assets:LangResources.MainTitle}">
+	<DockPanel>
+		<Menu DockPanel.Dock="Top" Background="Lavender">
+			<MenuItem Header="{x:Static assets:LangResources.MenuFile}">
+				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"/>
+				<Separator/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>
+			</MenuItem>
+			<MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
+				<MenuItem Header="{x:Static assets:LangResources.MenuAbout}"/>
+			</MenuItem>
+		</Menu>
+		<TabControl Margin="5" DockPanel.Dock="Bottom">
+			<TabItem Header="{x:Static assets:LangResources.TabRoleHeader}">
+				<views:RoleView DataContext="{Binding RoleVm}" />
+			</TabItem>
+			<TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
+				<TextBlock Margin="5">This is tab 2 content</TextBlock>
+			</TabItem>
+			<TabItem Header="Tab 3">
+				<TextBlock Text="{Binding Greeting}"
+						   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			</TabItem>
+		</TabControl>
+	</DockPanel>
+</Window>

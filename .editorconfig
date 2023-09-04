@@ -1,0 +1,19 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+
+[*.axaml]
+charset = utf-8
+end_of_line = lf
+
+[*.cs]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+# 编码
+charset = utf-8
+# 缩进
+indent_style = space
+indent_size = 4

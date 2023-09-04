@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
+			 xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+			 x:DataType="vm:RoleViewModel" x:CompileBindings="False"
+             x:Class="KungFuArchiveEditor.Views.RoleView">
+	<Grid ColumnDefinitions="100,120,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="8">
+		<Grid.Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="MinHeight" Value="30"/>
+			</Style>
+			<Style Selector="TextBlock[(Grid.Column)=0]">
+				<Setter Property="Foreground" Value="DarkSlateGray"/>
+			</Style>
+		</Grid.Styles>
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static assets:LangResources.UserID}"/>
+		<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserID}"/>
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.NameText}"/>
+		<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}"/>
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.MaxHP}"/>
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static assets:LangResources.MaxZhenqi}"/>
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static assets:LangResources.MaxBurden}"/>
+	</Grid>
+</UserControl>
