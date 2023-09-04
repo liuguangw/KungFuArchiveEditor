@@ -1,20 +1,31 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
-using System.IO;
-using System.Threading.Tasks;
-using System.Text;
-using System;
-using Newtonsoft.Json.Linq;
 using KungFuArchiveEditor.Assets;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KungFuArchiveEditor.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     private JObject? worldJsonData;
+    private IStorageFile? currentJsonFile;
     public string Greeting => "Welcome to Avalonia!";
     public RoleViewModel RoleVm { get; } = new();
+
+    public async void SaveFileAction()
+    {
+        if (currentJsonFile == null || worldJsonData == null)
+        {
+            return;
+        }
+        await SaveFileAsync(currentJsonFile, worldJsonData);
+    }
     public async void OpenFileAction()
     {
         var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -50,18 +61,28 @@ public class MainViewModel : ViewModelBase
                 if (worldJsonData != null)
                 {
                     LoadModelData(worldJsonData);
+                    currentJsonFile = files[0];
                 }
             }
         }
     }
 
-    private async Task<JObject> LoadFileAsync(IStorageFile file)
+    private static async Task<JObject> LoadFileAsync(IStorageFile file)
     {
         await using var stream = await file.OpenReadAsync();
         var encoding = Encoding.GetEncoding("utf-16");
         using var streamReader = new StreamReader(stream, encoding);
         var fileContent = await streamReader.ReadToEndAsync();
         return JObject.Parse(fileContent);
+    }
+
+    private static async Task SaveFileAsync(IStorageFile file,JObject jsonData)
+    {
+        var jsonContent = jsonData.ToString(Formatting.None);
+        await using var stream = await file.OpenWriteAsync();
+        var encoding = Encoding.GetEncoding("utf-16");
+        using var streamWriter = new StreamWriter(stream, encoding);
+        await streamWriter.WriteAsync(jsonContent);
     }
 
     private void LoadModelData(JObject jsonData)
@@ -72,16 +93,17 @@ public class MainViewModel : ViewModelBase
             return;
         }
         //uid
-        string? playerUid = null;
-        ReadJsonValue(playerSystem, "cur_select_player_uid", ref playerUid);
-        if (playerUid != null)
-        {
-            RoleVm.UserID = playerUid;
-        }
-        else
+        var playerUidObject = playerSystem["cur_select_player_uid"];
+        if (playerUidObject == null)
         {
             return;
         }
+        var playerUid = playerUidObject.ToObject<string>();
+        if (playerUid == null)
+        {
+            return;
+        }
+        RoleVm.UserID = playerUid;
         //获取玩家对象
         var commonPlayersData = jsonData["common_players_data"];
         if (commonPlayersData == null)
@@ -93,43 +115,6 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        //name
-        string? name = null;
-        ReadJsonValue(playerData, "name", ref name);
-        if (name != null)
-        {
-            RoleVm.Name = name;
-        }
-        //max hp
-        int? maxHP = null;
-        ReadJsonValue(playerData, "max_hp", ref maxHP);
-        if (maxHP.HasValue)
-        {
-            RoleVm.MaxHP = maxHP.Value;
-        }
-        //max zhenqi
-        int? maxZhenqi = null;
-        ReadJsonValue(playerData, "max_zhenqi", ref maxZhenqi);
-        if (maxZhenqi.HasValue)
-        {
-            RoleVm.MaxZhenqi = maxZhenqi.Value;
-        }
-        //max burden
-        int? maxBurden = null;
-        ReadJsonValue(playerData, "max_burden", ref maxBurden);
-        if (maxBurden.HasValue)
-        {
-            RoleVm.MaxBurden = maxBurden.Value;
-        }
-    }
-
-    private void ReadJsonValue<T>(JToken token, string key, ref T? value)
-    {
-        var nodeObject = token[key];
-        if (nodeObject == null)
-        {
-            return;
-        }
-        value = nodeObject.ToObject<T>();
+        RoleVm.LoadPlayerData(playerData);
     }
 }

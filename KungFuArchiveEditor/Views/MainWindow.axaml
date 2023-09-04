@@ -16,7 +16,8 @@
 			<MenuItem Header="{x:Static assets:LangResources.MenuFile}">
 				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
 						  Command="{Binding OpenFileAction}"/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"
+						  Command="{Binding SaveFileAction}"/>
 				<Separator/>
 				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>
 			</MenuItem>
