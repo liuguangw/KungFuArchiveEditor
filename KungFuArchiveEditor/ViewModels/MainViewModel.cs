@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using KungFuArchiveEditor.Assets;
+using KungFuArchiveEditor.Views;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -25,45 +26,75 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        await SaveFileAsync(currentJsonFile, worldJsonData);
+        try
+        {
+            await SaveFileAsync(currentJsonFile, worldJsonData);
+        }
+        catch (Exception ex)
+        {
+            await ShowMessageTipAsync(tipViewModel =>
+            {
+                tipViewModel.Title = "保存存档文件出错";
+                tipViewModel.Message = ex.Message;
+                tipViewModel.TextColorHex = "#fc5531";
+            });
+        }
     }
     public async void OpenFileAction()
     {
-        var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var topWindow = desktop.MainWindow;
             var storageProvider = topWindow!.StorageProvider;
-            var fileTypeFilter = new FilePickerFileType(LangResources.ArchiveFile)
+            try
             {
-                Patterns = new[] { "share_world_data.json" },
-                MimeTypes = new[] { "application/json" }
-            };
-            var openOptions = new FilePickerOpenOptions
+                await DoOpenFileAsync(storageProvider);
+            }
+            catch (Exception ex)
             {
-                Title = LangResources.OpenArchiveFile,
-                FileTypeFilter = new[] { fileTypeFilter },
-                AllowMultiple = false
-            };
-            if (appDataDir != null)
-            {
-                var pathDirs = new[]
+                await ShowMessageTipAsync(tipViewModel =>
                 {
+                    tipViewModel.Title = "读取存档文件出错";
+                    tipViewModel.Message = ex.Message;
+                    tipViewModel.TextColorHex = "#fc5531";
+                });
+            }
+        }
+    }
+
+    private async Task DoOpenFileAsync(IStorageProvider storageProvider)
+    {
+        var fileTypeFilter = new FilePickerFileType(LangResources.ArchiveFile)
+        {
+            Patterns = new[] { "share_world_data.json" },
+            MimeTypes = new[] { "application/json" }
+        };
+        var openOptions = new FilePickerOpenOptions
+        {
+            Title = LangResources.OpenArchiveFile,
+            FileTypeFilter = new[] { fileTypeFilter },
+            AllowMultiple = false
+        };
+        var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        if (appDataDir != null)
+        {
+            var pathDirs = new[]
+            {
                     appDataDir,
                     "HMS_00","Saved","PersistentDownloadDir","Saves"
                 };
-                var jsonDir = Path.Combine(pathDirs);
-                openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(jsonDir);
-            }
-            var files = await storageProvider.OpenFilePickerAsync(openOptions);
-            if (files.Count >= 1)
+            var jsonDir = Path.Combine(pathDirs);
+            openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(jsonDir);
+        }
+        var files = await storageProvider.OpenFilePickerAsync(openOptions);
+        if (files.Count >= 1)
+        {
+            worldJsonData = await LoadFileAsync(files[0]);
+            if (worldJsonData != null)
             {
-                worldJsonData = await LoadFileAsync(files[0]);
-                if (worldJsonData != null)
-                {
-                    LoadModelData(worldJsonData);
-                    currentJsonFile = files[0];
-                }
+
+                LoadModelData(worldJsonData);
+                currentJsonFile = files[0];
             }
         }
     }
@@ -116,6 +147,21 @@ public class MainViewModel : ViewModelBase
         if (containerEntityMap is JObject entryMap)
         {
             BagVm.LoadBagItemList(entryMap);
+        }
+    }
+
+    public static async Task ShowMessageTipAsync(Action<MessageTipViewModel> action)
+    {
+        var dialogVm = new MessageTipViewModel();
+        action.Invoke(dialogVm);
+        var dialog = new MessageTipDialog
+        {
+            DataContext = dialogVm
+        };
+        if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var topWindow = desktop.MainWindow!;
+            await dialog.ShowDialog<MessageTipViewModel?>(topWindow);
         }
     }
 }

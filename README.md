@@ -10,4 +10,4 @@
 
 如果你知道物品id和名称，欢迎你来提交PR修改。
 
-目前游戏的物品名称使用 [metadata.json](KungFuArchiveEditor/metadata.json) 文件来记录，加载存档时会从这个文件查询物品名称。
+目前游戏的物品名称使用 [item_names.txt](KungFuArchiveEditor/item_names.txt) 文件来记录，加载存档时会从这个文件查询物品名称。

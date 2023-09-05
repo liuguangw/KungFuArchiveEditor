@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using KungFuArchiveEditor.Tools;
+using KungFuArchiveEditor.ViewModels;
 using System;
 
 namespace KungFuArchiveEditor.Views;
@@ -19,9 +20,14 @@ public partial class MainView : UserControl
         {
             await GameMetaData.LoadAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            await MainViewModel.ShowMessageTipAsync(tipViewModel =>
+            {
+                tipViewModel.Title = "出错了";
+                tipViewModel.Message = ex.Message;
+                tipViewModel.TextColorHex = "#fc5531";
+            });
         }
     }
 }

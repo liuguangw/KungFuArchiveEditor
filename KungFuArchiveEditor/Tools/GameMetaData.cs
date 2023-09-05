@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -18,44 +18,63 @@ public static class GameMetaData
         {
             return;
         }
-        var metaDataFilePath = Path.Combine(exeDirPath, "metadata.json");
-        if (!File.Exists(metaDataFilePath))
+        var itemNamesFilePath = Path.Combine(exeDirPath, "item_names.txt");
+        if (!File.Exists(itemNamesFilePath))
         {
-            return;
+            throw new Exception("未找到物品名称配置文件: " + itemNamesFilePath);
         }
-        using var streamReader = new StreamReader(metaDataFilePath, Encoding.UTF8);
-        var fileContent = await streamReader.ReadToEndAsync();
-        var jsonData = JObject.Parse(fileContent);
-        if (jsonData == null)
+        try
         {
-            return;
+
+            await LoadItemNamesAsync(itemNamesFilePath);
         }
-        if (jsonData["item_names"] is JArray itemNameList)
+        catch (Exception ex)
         {
-            foreach (var item in itemNameList)
+            throw new Exception("解析物品名称配置文件出错, " + ex.Message);
+        }
+    }
+
+    private static async Task LoadItemNamesAsync(string filePath)
+    {
+        using var streamReader = new StreamReader(filePath, Encoding.UTF8);
+        //id与名称的分隔符
+        var lineSeps = new[] { ' ', '\t' };
+        string? lineContent;
+        string[] tmpTexts;
+        while (true)
+        {
+            lineContent = await streamReader.ReadLineAsync();
+            if (lineContent == null)
             {
-                if (item != null)
+                break;
+            }
+            lineContent = lineContent.Trim();
+            //注释行
+            if (lineContent.StartsWith('#'))
+            {
+                continue;
+            }
+            tmpTexts = lineContent.Split(lineSeps, 2);
+            if (tmpTexts.Length > 1)
+            {
+                tmpTexts[1] = tmpTexts[1].Trim();
+                if (string.IsNullOrEmpty(tmpTexts[0]) || string.IsNullOrEmpty(tmpTexts[1]))
                 {
-                    CheckAddItem(item);
+                    continue;
                 }
+                CheckAddItem(tmpTexts[0], tmpTexts[1]);
             }
         }
     }
 
-    private static void CheckAddItem(JToken item)
+    private static void CheckAddItem(string key, string value)
     {
-        var classIdObject = item["class_id"];
-        var nameObject = item["name"];
-        if ((classIdObject == null) || (nameObject == null))
+        var classID = int.Parse(key);
+        if (itemNames.ContainsKey(classID))
         {
-            return;
+            throw new Exception($"ID: {classID}重复");
         }
-        if (classIdObject.Type == JTokenType.Integer && nameObject.Type == JTokenType.String)
-        {
-            var classID = classIdObject.ToObject<int>();
-            var name = nameObject.ToObject<string>()!;
-            itemNames.Add(classID, name);
-        }
+        itemNames.Add(classID, value);
     }
 
     public static string? GetItemName(int classID)
