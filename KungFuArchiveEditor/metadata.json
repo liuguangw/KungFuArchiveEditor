@@ -1,0 +1,56 @@
+{
+	"item_names":[
+		{
+			"class_id": 80001,
+			"name":"木头"
+		},
+		{
+			"class_id": 80003,
+			"name":"石块"
+		},
+		{
+			"class_id": 80004,
+			"name":"铁块"
+		},
+		{
+			"class_id": 80006,
+			"name":"杂草"
+		},
+		{
+			"class_id": 80012,
+			"name":"醉仙桃花"
+		},
+		{
+			"class_id": 80022,
+			"name":"松果"
+		},
+		{
+			"class_id": 80024,
+			"name":"火石"
+		},
+		{
+			"class_id": 80032,
+			"name":"枫树树皮"
+		},
+		{
+			"class_id": 80040,
+			"name":"醉仙草"
+		},
+		{
+			"class_id": 93009,
+			"name":"武学心得"
+		},
+		{
+			"class_id": 91005,
+			"name":"金疮药"
+		},
+		{
+			"class_id": 91013,
+			"name":"烤熟肉[六品]"
+		},
+		{
+			"class_id": 93005,
+			"name":"藏宝图"
+		}
+	]
+}

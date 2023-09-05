@@ -15,8 +15,9 @@ public class MainViewModel : ViewModelBase
 {
     private JObject? worldJsonData;
     private IStorageFile? currentJsonFile;
-    public string Greeting => "Welcome to Avalonia!";
+
     public RoleViewModel RoleVm { get; } = new();
+    public BagViewModel BagVm { get; } = new();
 
     public async void SaveFileAction()
     {
@@ -76,7 +77,7 @@ public class MainViewModel : ViewModelBase
         return JObject.Parse(fileContent);
     }
 
-    private static async Task SaveFileAsync(IStorageFile file,JObject jsonData)
+    private static async Task SaveFileAsync(IStorageFile file, JObject jsonData)
     {
         var jsonContent = jsonData.ToString(Formatting.None);
         await using var stream = await file.OpenWriteAsync();
@@ -87,13 +88,8 @@ public class MainViewModel : ViewModelBase
 
     private void LoadModelData(JObject jsonData)
     {
-        var playerSystem = jsonData["player_system"];
-        if (playerSystem == null)
-        {
-            return;
-        }
         //uid
-        var playerUidObject = playerSystem["cur_select_player_uid"];
+        var playerUidObject = jsonData.SelectToken("player_system.cur_select_player_uid");
         if (playerUidObject == null)
         {
             return;
@@ -105,16 +101,21 @@ public class MainViewModel : ViewModelBase
         }
         RoleVm.UserID = playerUid;
         //获取玩家对象
-        var commonPlayersData = jsonData["common_players_data"];
-        if (commonPlayersData == null)
-        {
-            return;
-        }
-        var playerData = commonPlayersData[playerUid];
+        var playerData = jsonData.SelectToken($"common_players_data.{playerUid}");
         if (playerData == null)
         {
             return;
         }
         RoleVm.LoadPlayerData(playerData);
+        //物品列表
+        var containerEntityMap = playerData.SelectToken("component_data.container.entity_map");
+        if (containerEntityMap == null)
+        {
+            return;
+        }
+        if (containerEntityMap is JObject entryMap)
+        {
+            BagVm.LoadBagItemList(entryMap);
+        }
     }
 }

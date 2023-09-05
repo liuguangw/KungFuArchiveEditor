@@ -2,7 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:KungFuArchiveEditor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
+			 x:DataType="vm:BagViewModel" x:CompileBindings="False"
              x:Class="KungFuArchiveEditor.Views.BagView">
-  Welcome to Avalonia!
+	<DataGrid ItemsSource="{Binding BagItemList}"
+          IsReadOnly="True"
+          GridLinesVisibility="All"
+          BorderThickness="1" BorderBrush="Gray">
+		<DataGrid.Columns>
+			<DataGridTextColumn Header="posKey" Width="*"
+					Binding="{Binding PosKey}"/>
+			<DataGridTextColumn Header="entityType" Width="*"
+					Binding="{Binding EntityType}" />
+			<DataGridTextColumn Header="name" Width="2*"
+					Binding="{Binding Name}" />
+			<DataGridTemplateColumn Header="amount" Width="*">
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate>
+						<TextBox Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+		</DataGrid.Columns>
+	</DataGrid>
 </UserControl>

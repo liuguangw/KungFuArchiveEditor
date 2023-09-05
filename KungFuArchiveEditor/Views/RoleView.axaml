@@ -7,7 +7,7 @@
 			 xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
 			 x:DataType="vm:RoleViewModel" x:CompileBindings="False"
              x:Class="KungFuArchiveEditor.Views.RoleView">
-	<Grid ColumnDefinitions="100,120,*"
+	<Grid ColumnDefinitions="100,160,*"
 		  Margin="8">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" MinHeight="30" />

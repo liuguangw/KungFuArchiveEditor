@@ -66,7 +66,7 @@ public class RoleViewModel : ViewModelBase
         objectNode = playerData["max_hp"];
         if (objectNode != null)
         {
-            MaxHP = objectNode.ToObject<int>()!;
+            MaxHP = objectNode.ToObject<int>();
             if (objectNode is JValue value)
             {
                 maxHPObject = value;
@@ -76,7 +76,7 @@ public class RoleViewModel : ViewModelBase
         objectNode = playerData["max_zhenqi"];
         if (objectNode != null)
         {
-            MaxZhenqi = objectNode.ToObject<int>()!;
+            MaxZhenqi = objectNode.ToObject<int>();
             if (objectNode is JValue value)
             {
                 maxZhenqiObject = value;
@@ -86,7 +86,7 @@ public class RoleViewModel : ViewModelBase
         objectNode = playerData["max_burden"];
         if (objectNode != null)
         {
-            MaxBurden = objectNode.ToObject<int>()!;
+            MaxBurden = objectNode.ToObject<int>();
             if (objectNode is JValue value)
             {
                 maxBurdenObject = value;
