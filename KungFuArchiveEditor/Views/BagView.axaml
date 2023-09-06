@@ -19,7 +19,9 @@
                     <TextBox Margin="5" Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
                 </DataTemplate>
                 <DataTemplate x:Key="equip" DataType="{x:Type vm:BagItemEquipViewModel}">
-                    <Button Margin="5" Content="{x:Static assets:LangResources.ModifyEquipment}"/>
+					<!--命令绑定到BagViewModel上执行-->
+                    <Button Margin="5" Content="{x:Static assets:LangResources.ModifyEquipment}"
+							Command="{Binding $parent[DataGrid].DataContext.EditEquipCommand}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </tools:AmountTemplateSelector>
         </DataGrid.Resources>

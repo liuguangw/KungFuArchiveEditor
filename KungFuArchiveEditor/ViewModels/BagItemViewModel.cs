@@ -15,6 +15,7 @@ public class BagItemViewModel : ViewModelBase
     private bool hasAmount = false;
 
     protected JValue? amountObject = null;
+    protected JToken? itemJsonData = null;
     #endregion
 
     #region Properties
@@ -48,6 +49,7 @@ public class BagItemViewModel : ViewModelBase
     /// <param name="jsonData">json对象</param>
     public virtual void LoadItemData(int[] posArr,int itemEntityType, JToken jsonData)
     {
+        itemJsonData = jsonData;
         mainPos = posArr[0];
         subPos = posArr[1];
         pos = posArr[2];

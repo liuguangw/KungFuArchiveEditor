@@ -186,4 +186,7 @@
   <data name="ModifyEquipment" xml:space="preserve">
     <value>修改装备</value>
   </data>
+  <data name="Rarity" xml:space="preserve">
+    <value>品级</value>
+  </data>
 </root>

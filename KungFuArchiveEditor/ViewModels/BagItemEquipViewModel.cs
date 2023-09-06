@@ -1,12 +1,19 @@
 using KungFuArchiveEditor.Tools;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.ObjectModel;
 
 namespace KungFuArchiveEditor.ViewModels;
 
 public class BagItemEquipViewModel : BagItemViewModel
 {
+    private int rarity = 0;
+
+    private JValue? rarityObject = null;
+    public int Rarity
+    {
+        get => rarity;
+        set => RaiseAndSetIfChanged(ref rarity, value, rarityObject);
+    }
     public ObservableCollection<EquipPropViewModel> MainProps { get; } = new();
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
 
@@ -19,18 +26,28 @@ public class BagItemEquipViewModel : BagItemViewModel
     public override void LoadItemData(int[] posArr, int itemEntityType, JToken jsonData)
     {
         base.LoadItemData(posArr, itemEntityType, jsonData);
+        //rarity
+        var objectNode = jsonData["rarity"];
+        if (objectNode != null)
+        {
+            rarity = objectNode.ToObject<int>();
+            if (objectNode is JValue value)
+            {
+                rarityObject = value;
+            }
+        }
         if (jsonData["main_props"] is JArray propNodes)
         {
             foreach (var propNode in propNodes)
             {
-                CheckAddPropNode(propNode, MainProps.Add);
+                CheckAddPropNode(propNode, MainProps);
             }
         }
         if (jsonData["addon_props"] is JArray addonPropNodes)
         {
             foreach (var propNode in addonPropNodes)
             {
-                CheckAddPropNode(propNode, AddonProps.Add);
+                CheckAddPropNode(propNode, AddonProps);
             }
         }
     }
@@ -39,8 +56,8 @@ public class BagItemEquipViewModel : BagItemViewModel
     /// 解析属性类型和数值,并加入列表中
     /// </summary>
     /// <param name="propNode"></param>
-    /// <param name="addAction"></param>
-    private static void CheckAddPropNode(JToken propNode, Action<EquipPropViewModel> addAction)
+    /// <param name="propCollections"></param>
+    private static void CheckAddPropNode(JToken propNode, ObservableCollection<EquipPropViewModel> propCollections)
     {
         if (propNode is JArray numNodes)
         {
@@ -52,7 +69,7 @@ public class BagItemEquipViewModel : BagItemViewModel
                 {
                     var propID = firstNode.ToObject<int>();
                     var propValue = secondNode.ToObject<int>();
-                    addAction.Invoke(new EquipPropViewModel()
+                    propCollections.Add(new EquipPropViewModel()
                     {
                         Id = propID,
                         Value = propValue
@@ -66,5 +83,42 @@ public class BagItemEquipViewModel : BagItemViewModel
     public override string GetItemName(int classID)
     {
         return GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? "未知";
+    }
+
+    /// <summary>
+    /// 更新装备属性的json对象字段,main_props和addon_props
+    /// </summary>
+    public void UpdatePropsJsonData()
+    {
+        if (itemJsonData == null)
+        {
+            return;
+        }
+        var propNames = new string[] { "main_props", "addon_props" };
+        var propCollections = new ObservableCollection<EquipPropViewModel>[] { MainProps, AddonProps };
+        for (var i = 0; i < propNames.Length; i++)
+        {
+            var propName = propNames[i];
+            var propCollection = propCollections[i];
+            if (itemJsonData[propName] is JArray propJsonNodes)
+            {
+                //清理
+                propJsonNodes.Clear();
+                //重新添加json对象
+                foreach (var itemProp in propCollection)
+                {
+                    if (itemProp == null)
+                    {
+                        continue;
+                    }
+                    var propJsonNode = new JArray{
+                        itemProp.Id,
+                        itemProp.Value
+                    };
+                    propJsonNodes.Add(propJsonNode);
+                }
+
+            }
+        }
     }
 }
