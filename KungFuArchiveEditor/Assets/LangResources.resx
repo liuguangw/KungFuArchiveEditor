@@ -172,4 +172,19 @@
   <data name="ArchiveFile" xml:space="preserve">
     <value>archive file</value>
   </data>
+  <data name="ItemPosition" xml:space="preserve">
+    <value>position</value>
+  </data>
+  <data name="EntityType" xml:space="preserve">
+    <value>entity type</value>
+  </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>item name</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>amount</value>
+  </data>
+  <data name="ModifyEquipment" xml:space="preserve">
+    <value>modify</value>
+  </data>
 </root>

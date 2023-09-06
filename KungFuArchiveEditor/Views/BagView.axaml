@@ -2,28 +2,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+             xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+             xmlns:tools="using:KungFuArchiveEditor.Tools"
+             xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
              mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
-			 x:DataType="vm:BagViewModel" x:CompileBindings="False"
+             x:DataType="vm:BagViewModel" x:CompileBindings="False"
              x:Class="KungFuArchiveEditor.Views.BagView">
-	<DataGrid ItemsSource="{Binding BagItemList}"
+    <DataGrid ItemsSource="{Binding BagItemList}"
           IsReadOnly="True"
+          CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
           GridLinesVisibility="All"
           BorderThickness="1" BorderBrush="Gray">
-		<DataGrid.Columns>
-			<DataGridTextColumn Header="posKey" Width="*"
-					Binding="{Binding PosKey}"/>
-			<DataGridTextColumn Header="entityType" Width="*"
-					Binding="{Binding EntityType}" />
-			<DataGridTextColumn Header="name" Width="2*"
-					Binding="{Binding Name}" />
-			<DataGridTemplateColumn Header="amount" Width="*">
-				<DataGridTemplateColumn.CellTemplate>
-					<DataTemplate>
-						<TextBox Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
-					</DataTemplate>
-				</DataGridTemplateColumn.CellTemplate>
-			</DataGridTemplateColumn>
-		</DataGrid.Columns>
-	</DataGrid>
+        <DataGrid.Resources>
+            <tools:AmountTemplateSelector x:Key="amountTemplate">
+                <DataTemplate x:Key="default" DataType="{x:Type vm:BagItemViewModel}">
+                    <TextBox Margin="5" Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
+                </DataTemplate>
+                <DataTemplate x:Key="equip" DataType="{x:Type vm:BagItemEquipViewModel}">
+                    <Button Margin="5" Content="{x:Static assets:LangResources.ModifyEquipment}"/>
+                </DataTemplate>
+            </tools:AmountTemplateSelector>
+        </DataGrid.Resources>
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="{x:Static assets:LangResources.ItemPosition}" Width="*"
+                    Binding="{Binding PosKey}"/>
+            <DataGridTextColumn Header="{x:Static assets:LangResources.EntityType}" Width="*"
+                    Binding="{Binding EntityType}" />
+            <DataGridTextColumn Header="class_id" Width="*"
+                    Binding="{Binding ClassID}" />
+            <DataGridTextColumn Header="{x:Static assets:LangResources.ItemName}" Width="2*"
+                    Binding="{Binding Name}" />
+            <DataGridTemplateColumn Header="{x:Static assets:LangResources.Amount}"  Width="*"
+                                    CellTemplate="{DynamicResource amountTemplate}"/>
+        </DataGrid.Columns>
+    </DataGrid>
 </UserControl>

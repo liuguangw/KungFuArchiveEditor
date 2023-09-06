@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:KungFuArchiveEditor.ViewModels"
-			 xmlns:views="clr-namespace:KungFuArchiveEditor.Views"
-			 xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+             xmlns:views="clr-namespace:KungFuArchiveEditor.Views"
+             xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="480"
              x:Class="KungFuArchiveEditor.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -13,27 +13,27 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-	<DockPanel>
-		<Menu DockPanel.Dock="Top" Background="Lavender">
-			<MenuItem Header="{x:Static assets:LangResources.MenuFile}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
-						  Command="{Binding OpenFileAction}"/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"
-						  Command="{Binding SaveFileAction}"/>
-				<Separator/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>
-			</MenuItem>
-			<MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuAbout}"/>
-			</MenuItem>
-		</Menu>
-		<TabControl Margin="5" DockPanel.Dock="Bottom">
-			<TabItem Header="{x:Static assets:LangResources.TabRoleHeader}">
-				<views:RoleView DataContext="{Binding RoleVm}" />
-			</TabItem>
-			<TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
-				<views:BagView DataContext="{Binding BagVm}" />
-			</TabItem>
-		</TabControl>
-	</DockPanel>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="Lavender">
+            <MenuItem Header="{x:Static assets:LangResources.MenuFile}">
+                <MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
+                          Command="{Binding OpenFileAction}"/>
+                <MenuItem Header="{x:Static assets:LangResources.MenuSave}"
+                          Command="{Binding SaveFileAction}"/>
+                <Separator/>
+                <MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>
+            </MenuItem>
+            <MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
+                <MenuItem Header="{x:Static assets:LangResources.MenuAbout}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Margin="5" DockPanel.Dock="Bottom">
+            <TabItem Header="{x:Static assets:LangResources.TabRoleHeader}">
+                <views:RoleView DataContext="{Binding RoleVm}" />
+            </TabItem>
+            <TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
+                <views:BagView DataContext="{Binding BagVm}" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </UserControl>

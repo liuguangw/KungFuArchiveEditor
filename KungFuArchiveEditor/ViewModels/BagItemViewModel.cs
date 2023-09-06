@@ -6,79 +6,58 @@ namespace KungFuArchiveEditor.ViewModels;
 public class BagItemViewModel : ViewModelBase
 {
     #region Fields
-    private string posKey = string.Empty;
+    private int mainPos = 0;
+    private int subPos = 0;
+    private int pos = 0;
     private int classID = 0;
     private int entityType = 0;
     private int amount = 1;
     private bool hasAmount = false;
 
-    protected JValue? classIDObject = null;
-    protected JValue? entityTypeObject = null;
     protected JValue? amountObject = null;
     #endregion
 
     #region Properties
-    public string PosKey
-    {
-        get => posKey;
-        set => CheckRaiseAndSetIfChanged(ref posKey, value);
-    }
-    public int ClassID
-    {
-        get => classID;
-        set => RaiseAndSetIfChanged(ref classID, value, classIDObject);
-    }
+    public int MainPos => mainPos;
+    public int SubPos => subPos;
+    public int Pos => pos;
 
-    public string Name => GameMetaData.GetItemName(classID) ?? $"未知(class_id:{classID})";
-    public int EntityType
-    {
-        get => entityType;
-        set => RaiseAndSetIfChanged(ref entityType, value, entityTypeObject);
-    }
+    public string PosKey => $"{mainPos}-{subPos}-{pos}";
+
+    public int ClassID => classID;
+
+    public string Name => GetItemName(classID);
+    public int EntityType => entityType;
     public int Amount
     {
         get => amount;
         set => RaiseAndSetIfChanged(ref amount, value, amountObject);
     }
-    public bool HasAmount
-    {
-        get => hasAmount;
-        set => CheckRaiseAndSetIfChanged(ref hasAmount, value);
-    }
+    public bool HasAmount => hasAmount;
     #endregion
 
     /// <summary>
     /// 从json对象中加载物品信息
     /// </summary>
     /// <param name="jsonData"></param>
-    public virtual void LoadItemData(JToken jsonData)
+    public virtual void LoadItemData(int[] posArr,int itemEntityType, JToken jsonData)
     {
+        mainPos = posArr[0];
+        subPos = posArr[1];
+        pos = posArr[2];
+        entityType = itemEntityType;
         //class_id
         var objectNode = jsonData["class_id"];
         if (objectNode != null)
         {
-            ClassID = objectNode.ToObject<int>();
-            if (objectNode is JValue value)
-            {
-                classIDObject = value;
-            }
-        }
-        //entity_type
-        objectNode = jsonData["entity_type"];
-        if (objectNode != null)
-        {
-            EntityType = objectNode.ToObject<int>();
-            if (objectNode is JValue value)
-            {
-                entityTypeObject = value;
-            }
+            classID = objectNode.ToObject<int>();
         }
         //amount
         objectNode = jsonData["amount"];
         if (objectNode != null)
         {
-            Amount = objectNode.ToObject<int>();
-            HasAmount = true;
+            amount = objectNode.ToObject<int>();
+            hasAmount = true;
             if (objectNode is JValue value)
             {
                 amountObject = value;
@@ -86,9 +65,14 @@ public class BagItemViewModel : ViewModelBase
         }
         else
         {
-            Amount = 1;
-            HasAmount = false;
+            amount = 1;
+            hasAmount = false;
         }
 
+    }
+
+    public virtual string GetItemName(int classID)
+    {
+        return GameMetaData.GetItemName(classID) ?? $"未知(class_id:{classID})";
     }
 }

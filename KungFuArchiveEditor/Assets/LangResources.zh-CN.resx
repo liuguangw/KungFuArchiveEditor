@@ -171,4 +171,19 @@
   <data name="ArchiveFile" xml:space="preserve">
     <value>存档文件</value>
   </data>
+  <data name="ItemPosition" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="EntityType" xml:space="preserve">
+    <value>实体类型</value>
+  </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>物品名称</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>数量</value>
+  </data>
+  <data name="ModifyEquipment" xml:space="preserve">
+    <value>修改装备</value>
+  </data>
 </root>

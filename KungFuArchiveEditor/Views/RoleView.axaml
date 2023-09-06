@@ -2,39 +2,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+             xmlns:vm="using:KungFuArchiveEditor.ViewModels"
              mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
-			 xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
-			 x:DataType="vm:RoleViewModel" x:CompileBindings="False"
+             xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+             x:DataType="vm:RoleViewModel" x:CompileBindings="False"
              x:Class="KungFuArchiveEditor.Views.RoleView">
-	<Grid ColumnDefinitions="100,160,*"
-		  Margin="8">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto" MinHeight="30" />
-			<RowDefinition Height="auto" MinHeight="30" />
-			<RowDefinition Height="auto" MinHeight="30" />
-			<RowDefinition Height="auto" MinHeight="30" />
-			<RowDefinition Height="auto" MinHeight="30" />
-		</Grid.RowDefinitions>
-		<Grid.Styles>
-			<Style Selector="TextBlock">
-				<Setter Property="VerticalAlignment" Value="Center"/>
-			</Style>
-			<Style Selector="TextBlock[(Grid.Column)=0]">
-				<Setter Property="Foreground" Value="DarkSlateGray"/>
-				<Setter Property="TextAlignment" Value="Right"/>
-				<Setter Property="Padding" Value="0,0,8,0"/>
-			</Style>
-		</Grid.Styles>
-		<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static assets:LangResources.UserID}"/>
-		<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserID}"/>
-		<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.NameText}"/>
-		<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}"/>
-		<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.MaxHP}"/>
-		<TextBox Grid.Row="2" Grid.Column="1" Margin="0,5" Text="{Binding MaxHP}" />
-		<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static assets:LangResources.MaxZhenqi}"/>
-		<TextBox Grid.Row="3" Grid.Column="1" Margin="0,5" Text="{Binding MaxZhenqi}" />
-		<TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static assets:LangResources.MaxBurden}"/>
-		<TextBox Grid.Row="4" Grid.Column="1" Margin="0,5" Text="{Binding MaxBurden}" />
-	</Grid>
+    <Grid ColumnDefinitions="100,160,*"
+          Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="auto" MinHeight="30" />
+            <RowDefinition Height="auto" MinHeight="30" />
+        </Grid.RowDefinitions>
+        <Grid.Styles>
+            <Style Selector="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            <Style Selector="TextBlock[(Grid.Column)=0]">
+                <Setter Property="Foreground" Value="DarkSlateGray"/>
+                <Setter Property="TextAlignment" Value="Right"/>
+                <Setter Property="Padding" Value="0,0,8,0"/>
+            </Style>
+        </Grid.Styles>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static assets:LangResources.UserID}"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UserID}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.NameText}"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.MaxHP}"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="0,5" Text="{Binding MaxHP}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static assets:LangResources.MaxZhenqi}"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="0,5" Text="{Binding MaxZhenqi}" />
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static assets:LangResources.MaxBurden}"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="0,5" Text="{Binding MaxBurden}" />
+    </Grid>
 </UserControl>
