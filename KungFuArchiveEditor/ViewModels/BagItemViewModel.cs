@@ -33,13 +33,19 @@ public class BagItemViewModel : ViewModelBase
         get => amount;
         set => RaiseAndSetIfChanged(ref amount, value, amountObject);
     }
+
+    /// <summary>
+    /// 是否有amount这个字段
+    /// </summary>
     public bool HasAmount => hasAmount;
     #endregion
 
     /// <summary>
-    /// 从json对象中加载物品信息
+    /// 从json对象中读取装备属性
     /// </summary>
-    /// <param name="jsonData"></param>
+    /// <param name="posArr">位置(3个数字)</param>
+    /// <param name="itemEntityType">实体类型</param>
+    /// <param name="jsonData">json对象</param>
     public virtual void LoadItemData(int[] posArr,int itemEntityType, JToken jsonData)
     {
         mainPos = posArr[0];
@@ -73,6 +79,6 @@ public class BagItemViewModel : ViewModelBase
 
     public virtual string GetItemName(int classID)
     {
-        return GameMetaData.GetItemName(classID) ?? $"未知(class_id:{classID})";
+        return GameMetaData.GetItemName(classID) ?? "未知";
     }
 }

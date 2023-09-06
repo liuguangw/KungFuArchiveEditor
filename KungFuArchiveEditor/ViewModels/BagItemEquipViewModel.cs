@@ -9,6 +9,13 @@ public class BagItemEquipViewModel : BagItemViewModel
 {
     public ObservableCollection<EquipPropViewModel> MainProps { get; } = new();
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
+
+    /// <summary>
+    /// 从json对象中读取装备属性
+    /// </summary>
+    /// <param name="posArr">位置(3个数字)</param>
+    /// <param name="itemEntityType">实体类型</param>
+    /// <param name="jsonData">json对象</param>
     public override void LoadItemData(int[] posArr, int itemEntityType, JToken jsonData)
     {
         base.LoadItemData(posArr, itemEntityType, jsonData);
@@ -28,6 +35,11 @@ public class BagItemEquipViewModel : BagItemViewModel
         }
     }
 
+    /// <summary>
+    /// 解析属性类型和数值,并加入列表中
+    /// </summary>
+    /// <param name="propNode"></param>
+    /// <param name="addAction"></param>
     private static void CheckAddPropNode(JToken propNode, Action<EquipPropViewModel> addAction)
     {
         if (propNode is JArray numNodes)
@@ -53,6 +65,6 @@ public class BagItemEquipViewModel : BagItemViewModel
 
     public override string GetItemName(int classID)
     {
-        return GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? $"未知(class_id:{classID})";
+        return GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? "未知";
     }
 }
