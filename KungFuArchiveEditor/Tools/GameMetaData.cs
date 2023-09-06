@@ -13,11 +13,13 @@ public static class GameMetaData
     {
         Item,
         Equip,
+        EquipMainProp,
         EquipAddonProp
     }
     private static readonly Dictionary<int, string> itemNames = new();
     private static readonly Dictionary<int, string> equipNames = new();
-    private static readonly Dictionary<int, string> equipPropNames = new();
+    private static readonly Dictionary<int, string> equipMainPropNames = new();
+    private static readonly Dictionary<int, string> equipAddonPropNames = new();
     public static async Task LoadAsync()
     {
         var exePath = Assembly.GetExecutingAssembly().Location;
@@ -31,7 +33,8 @@ public static class GameMetaData
         {
             ["item.txt"] = itemNames,
             ["equipment.txt"] = equipNames,
-            ["equip_addon_prop.txt"] = equipPropNames
+            ["equip_main_prop.txt"] = equipMainPropNames,
+            ["equip_addon_prop.txt"] = equipAddonPropNames
         };
         foreach (var keyPair in fileMap)
         {
@@ -101,9 +104,13 @@ public static class GameMetaData
         {
             targetMap = equipNames;
         }
+        else if (itemMetaType == MetaType.EquipMainProp)
+        {
+            targetMap = equipMainPropNames;
+        }
         else if (itemMetaType == MetaType.EquipAddonProp)
         {
-            targetMap = equipPropNames;
+            targetMap = equipAddonPropNames;
         }
 
         if (targetMap.ContainsKey(classID))
