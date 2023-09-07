@@ -1,7 +1,6 @@
 using KungFuArchiveEditor.Tools;
 using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive;
 
@@ -53,13 +52,13 @@ public class EquipDialogViewModel : BagViewModel
     public ObservableCollection<EquipPropViewModel> MainProps { get; } = new();
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
     public ReactiveCommand<Unit, Unit> AddPropLineCommand { get; }
-    public bool CanAddPropLine => AddonProps.Count < 2;
+    //public bool CanAddPropLine => AddonProps.Count < 2;
     #endregion
     public EquipDialogViewModel()
     {
-        var canCanAddPropLine = this.WhenAnyValue(item => item.CanAddPropLine);
-        AddPropLineCommand = ReactiveCommand.Create(AddPropLineAction, canCanAddPropLine);
-        AddonProps.CollectionChanged += ReCheckCanAddPropLine;
+        //var canCanAddPropLine = this.WhenAnyValue(item => item.CanAddPropLine);
+        AddPropLineCommand = ReactiveCommand.Create(AddPropLineAction);
+        //AddonProps.CollectionChanged += ReCheckCanAddPropLine;
     }
 
     /// <summary>
@@ -67,23 +66,22 @@ public class EquipDialogViewModel : BagViewModel
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void ReCheckCanAddPropLine(object? sender, NotifyCollectionChangedEventArgs e)
+    /*private void ReCheckCanAddPropLine(object? sender, NotifyCollectionChangedEventArgs e)
     {
         this.RaisePropertyChanged(nameof(CanAddPropLine));
-    }
+    }*/
 
     public void AddPropLineAction()
     {
-        Debug.WriteLine("add action");
-        var attrIds = new int[] { 101, 120 };
+        /*var attrIds = new int[] { 101, 120 };
         var currentCount = AddonProps.Count;
         if (currentCount >= attrIds.Length)
         {
             return;
-        }
+        }*/
         AddonProps.Add(new EquipPropViewModel()
         {
-            Id = attrIds[currentCount],
+            Id = 101,
             Value = 1
         });
     }
