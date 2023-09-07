@@ -220,4 +220,10 @@
   <data name="AddAddonProp" xml:space="preserve">
     <value>add addon property</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>delete</value>
+  </data>
+  <data name="ActionText" xml:space="preserve">
+    <value>action</value>
+  </data>
 </root>

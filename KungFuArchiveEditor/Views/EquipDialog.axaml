@@ -4,14 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:KungFuArchiveEditor.ViewModels"
         xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
-        mc:Ignorable="d" Width="640" Height="480"
+        mc:Ignorable="d" Width="720" Height="566"
         x:Class="KungFuArchiveEditor.Views.EquipDialog"
         x:DataType="vm:EquipDialogViewModel"
         WindowStartupLocation="CenterOwner"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding Title}">
-	<Grid Margin="5" ColumnDefinitions="*" RowDefinitions="Auto,30,3*,30,5*,40">
+	<Grid Margin="5" ColumnDefinitions="*" RowDefinitions="Auto,30,94,30,*,40">
 		<Grid.Styles>
+			<!--定义按钮的样式-->
 			<Style Selector="Button">
 				<Setter Property="MinWidth" Value="120"/>
 				<Setter Property="Height" Value="30"/>
@@ -32,6 +33,15 @@
 				<Setter Property="Foreground" Value="White"/>
 				<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 					<Setter Property="Background" Value="#0077cc"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Style>
+			</Style>
+			<Style Selector="Button.delete">
+				<Setter Property="MinWidth" Value="60"/>
+				<Setter Property="Background" Value="#FF4742"/>
+				<Setter Property="Foreground" Value="White"/>
+				<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="#f97348"/>
 					<Setter Property="Foreground" Value="White"/>
 				</Style>
 			</Style>
@@ -119,6 +129,14 @@
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="{x:Static assets:LangResources.AttrDescription}" Width="3*"
 						Binding="{Binding Description}"/>
+				<DataGridTemplateColumn Header="{x:Static assets:LangResources.ActionText}" Width="Auto">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Margin="5" Classes="delete" Content="{x:Static assets:LangResources.Delete}"
+							Command="{Binding $parent[DataGrid].DataContext.DeletePropLineCommand}" CommandParameter="{Binding}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 		<DockPanel Grid.Row="5" Grid.Column="0">

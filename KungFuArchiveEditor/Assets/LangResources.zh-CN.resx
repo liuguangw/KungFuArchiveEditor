@@ -219,4 +219,10 @@
   <data name="AddAddonProp" xml:space="preserve">
     <value>添加附加属性</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ActionText" xml:space="preserve">
+    <value>操作</value>
+  </data>
 </root>

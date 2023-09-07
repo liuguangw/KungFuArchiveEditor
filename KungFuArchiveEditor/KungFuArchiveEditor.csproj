@@ -39,4 +39,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Assets\LangResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LangResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

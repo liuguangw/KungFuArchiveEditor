@@ -53,12 +53,14 @@ public class EquipDialogViewModel : BagViewModel
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
     public ReactiveCommand<Unit, Unit> AddPropLineCommand { get; }
     //public bool CanAddPropLine => AddonProps.Count < 2;
+    public ReactiveCommand<EquipPropViewModel, Unit> DeletePropLineCommand { get; }
     #endregion
     public EquipDialogViewModel()
     {
         //var canCanAddPropLine = this.WhenAnyValue(item => item.CanAddPropLine);
         AddPropLineCommand = ReactiveCommand.Create(AddPropLineAction);
         //AddonProps.CollectionChanged += ReCheckCanAddPropLine;
+        DeletePropLineCommand = ReactiveCommand.Create<EquipPropViewModel>(DeletePropLineAction);
     }
 
     /// <summary>
@@ -85,4 +87,10 @@ public class EquipDialogViewModel : BagViewModel
             Value = 1
         });
     }
+
+    /// <summary>
+    /// 删除一行附加属性
+    /// </summary>
+    /// <param name="prop"></param>
+    private void DeletePropLineAction(EquipPropViewModel prop) => AddonProps.Remove(prop);
 }
