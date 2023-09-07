@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using KungFuArchiveEditor.ViewModels;
 
 namespace KungFuArchiveEditor.Views
 {
@@ -8,5 +10,15 @@ namespace KungFuArchiveEditor.Views
         {
             InitializeComponent();
         }
+        private void ConfirmHandler(object sender, RoutedEventArgs args)
+        {
+            if (DataContext is EquipDialogViewModel vm)
+            {
+                vm.Confirmed = true;
+            }
+            Close();
+        }
+
+        private void CancelHandler(object sender, RoutedEventArgs args) => Close();
     }
 }

@@ -1,6 +1,9 @@
 using KungFuArchiveEditor.Tools;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Reactive;
 
 namespace KungFuArchiveEditor.ViewModels;
 
@@ -40,8 +43,8 @@ public class EquipDialogViewModel : BagViewModel
     /// </summary>
     public string PosKey
     {
-        get=> posKey;
-        set=>posKey = value;
+        get => posKey;
+        set => posKey = value;
     }
     /// <summary>
     /// 装备名称
@@ -49,5 +52,39 @@ public class EquipDialogViewModel : BagViewModel
     public string Name => GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? "未知";
     public ObservableCollection<EquipPropViewModel> MainProps { get; } = new();
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
+    public ReactiveCommand<Unit, Unit> AddPropLineCommand { get; }
+    public bool CanAddPropLine => AddonProps.Count < 2;
     #endregion
+    public EquipDialogViewModel()
+    {
+        var canCanAddPropLine = this.WhenAnyValue(item => item.CanAddPropLine);
+        AddPropLineCommand = ReactiveCommand.Create(AddPropLineAction, canCanAddPropLine);
+        AddonProps.CollectionChanged += ReCheckCanAddPropLine;
+    }
+
+    /// <summary>
+    /// 重新检测能不能添加附加属性
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ReCheckCanAddPropLine(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RaisePropertyChanged(nameof(CanAddPropLine));
+    }
+
+    public void AddPropLineAction()
+    {
+        Debug.WriteLine("add action");
+        var attrIds = new int[] { 101, 120 };
+        var currentCount = AddonProps.Count;
+        if (currentCount >= attrIds.Length)
+        {
+            return;
+        }
+        AddonProps.Add(new EquipPropViewModel()
+        {
+            Id = attrIds[currentCount],
+            Value = 1
+        });
+    }
 }

@@ -81,7 +81,7 @@ public class MainViewModel : ViewModelBase
             var pathDirs = new[]
             {
                     appDataDir,
-                    "HMS_00","Saved","PersistentDownloadDir","Saves"
+                    "HMS_00","Saved","PersistentDownloadDir"
                 };
             var jsonDir = Path.Combine(pathDirs);
             openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(jsonDir);

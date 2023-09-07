@@ -41,11 +41,11 @@ public class BagViewModel : ViewModelBase
                 return posArr[0];
             })
             //按位置排序
-            .ThenBy(itemProperty =>
+            /*.ThenBy(itemProperty =>
             {
                 var posArr = ParsePos(itemProperty.Name);
                 return posArr[2];
-            });
+            })*/;
         //
         foreach (var itemNodeProperty in itemNodes)
         {

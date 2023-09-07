@@ -7,70 +7,130 @@
         mc:Ignorable="d" Width="640" Height="480"
         x:Class="KungFuArchiveEditor.Views.EquipDialog"
         x:DataType="vm:EquipDialogViewModel"
-        WindowStartupLocation="CenterOwner" CanResize="False"
+        WindowStartupLocation="CenterOwner"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding Title}">
-    <DockPanel Margin="5">
-        <StackPanel DockPanel.Dock="Top" Spacing="5">
-            <!--左侧-->
-            <Grid ColumnDefinitions="100,160,*" Margin="8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" MinHeight="30" />
-                    <RowDefinition Height="auto" MinHeight="30" />
-                    <RowDefinition Height="auto" MinHeight="30" />
-                    <RowDefinition Height="auto" MinHeight="30" />
-                </Grid.RowDefinitions>
-                <Grid.Styles>
-                    <Style Selector="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                    </Style>
-                    <Style Selector="TextBlock[(Grid.Column)=0]">
-                        <Setter Property="Foreground" Value="DarkSlateGray"/>
-                        <Setter Property="TextAlignment" Value="Right"/>
-                        <Setter Property="Padding" Value="0,0,8,0"/>
-                    </Style>
-                </Grid.Styles>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="class id"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ClassID}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.ItemName}"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.ItemPosition}"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PosKey}"/>
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static assets:LangResources.Rarity}"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="0,5" Text="{Binding Rarity}" />
-            </Grid>
-            <Expander VerticalAlignment="Top" MinWidth="200" Header="主属性(todo)">
-                <DataGrid ItemsSource="{Binding MainProps}"
-                    IsReadOnly="True"
-                    CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
-                    GridLinesVisibility="All"
-                    BorderThickness="1" BorderBrush="Gray">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="属性ID" Width="*"
-                                Binding="{Binding Id}"/>
-						<DataGridTextColumn Header="属性值" Width="*"
-                                Binding="{Binding Value}"/>
-						<DataGridTextColumn Header="属性说明" Width="3*"
-                                Binding="{Binding Description}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Expander>
-            <Expander VerticalAlignment="Top" MinWidth="200" Header="额外属性(todo)">
-				<DataGrid ItemsSource="{Binding AddonProps}"
-                    IsReadOnly="True"
-                    CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
-                    GridLinesVisibility="All"
-                    BorderThickness="1" BorderBrush="Gray">
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="属性ID" Width="*"
-                                Binding="{Binding Id}"/>
-						<DataGridTextColumn Header="属性值" Width="*"
-                                Binding="{Binding Value}"/>
-						<DataGridTextColumn Header="属性说明" Width="3*"
-                                Binding="{Binding Description}"/>
-					</DataGrid.Columns>
-				</DataGrid>
-            </Expander>
-        </StackPanel>
-    </DockPanel>
+	<Grid Margin="5" ColumnDefinitions="*" RowDefinitions="Auto,30,3*,30,5*,40">
+		<Grid.Styles>
+			<Style Selector="Button">
+				<Setter Property="MinWidth" Value="120"/>
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Margin" Value="5,5"/>
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+			</Style>
+			<Style Selector="Button.confirm">
+				<Setter Property="Background" Value="#9ac046"/>
+				<Setter Property="Foreground" Value="White"/>
+				<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="#a9e524"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Style>
+			</Style>
+			<Style Selector="Button.add_prop">
+				<Setter Property="Background" Value="#0095ff"/>
+				<Setter Property="Foreground" Value="White"/>
+				<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+					<Setter Property="Background" Value="#0077cc"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Style>
+			</Style>
+		</Grid.Styles>
+		<Grid ColumnDefinitions="100,160,*" Margin="5">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto" MinHeight="30" />
+				<RowDefinition Height="auto" MinHeight="30" />
+				<RowDefinition Height="auto" MinHeight="30" />
+				<RowDefinition Height="auto" MinHeight="30" />
+			</Grid.RowDefinitions>
+			<Grid.Styles>
+				<Style Selector="TextBlock">
+					<Setter Property="VerticalAlignment" Value="Center"/>
+				</Style>
+				<Style Selector="TextBlock[(Grid.Column)=0]">
+					<Setter Property="Foreground" Value="DarkSlateGray"/>
+					<Setter Property="TextAlignment" Value="Right"/>
+					<Setter Property="Padding" Value="0,0,8,0"/>
+				</Style>
+			</Grid.Styles>
+			<TextBlock Grid.Row="0" Grid.Column="0" Text="class id"/>
+			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ClassID}"/>
+			<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.ItemName}"/>
+			<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Name}"/>
+			<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.ItemPosition}"/>
+			<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PosKey}"/>
+			<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static assets:LangResources.Rarity}"/>
+			<TextBox Grid.Row="3" Grid.Column="1" Margin="0,5" Text="{Binding Rarity}" />
+		</Grid>
+		<TextBlock Grid.Row="1" Grid.Column="0" Margin="5,0"
+				   Text="{x:Static assets:LangResources.MainProp}"
+				   VerticalAlignment="Center"/>
+		<DataGrid ItemsSource="{Binding MainProps}"
+			Grid.Row="2" Grid.Column="0" Margin="5"
+			IsReadOnly="True"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
+			GridLinesVisibility="All"
+			BorderThickness="1" BorderBrush="Gray">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="{x:Static assets:LangResources.AttrID}" Width="*"
+						Binding="{Binding Id}"/>
+				<DataGridTemplateColumn Header="{x:Static assets:LangResources.AttrValue}" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBox Margin="5" Text="{Binding Value}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="{x:Static assets:LangResources.AttrDescription}" Width="3*"
+						Binding="{Binding Description}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+		<TextBlock Grid.Row="3" Grid.Column="0" Margin="5,0"
+				   VerticalAlignment="Center">
+			<Run Text="{x:Static assets:LangResources.AddonProp}"/>
+			<Run>(</Run>
+			<Run Foreground="#0a95ff"
+				 Text="{x:Static assets:LangResources.AddonPropTip}"/>
+			<Run>,</Run>
+			<Run Foreground="#0a95ff"
+				 Text="{x:Static assets:LangResources.AddonPropTip1}"/>
+			<Run>)</Run>
+		</TextBlock>
+		<DataGrid ItemsSource="{Binding AddonProps}"
+			Grid.Row="4" Grid.Column="0" Margin="5"
+			IsReadOnly="True"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
+			GridLinesVisibility="All"
+			BorderThickness="1" BorderBrush="Gray">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="{x:Static assets:LangResources.AttrID}" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBox Margin="5" Text="{Binding Id}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="{x:Static assets:LangResources.AttrValue}" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBox Margin="5" Text="{Binding Value}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="{x:Static assets:LangResources.AttrDescription}" Width="3*"
+						Binding="{Binding Description}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+		<DockPanel Grid.Row="5" Grid.Column="0">
+			<Button DockPanel.Dock="Left" Classes="add_prop"
+					Content="{x:Static assets:LangResources.AddAddonProp}"
+					Command="{Binding AddPropLineCommand}" />
+			<WrapPanel DockPanel.Dock="Right" FlowDirection="RightToLeft">
+				<Button Click="ConfirmHandler" Classes="confirm"
+						Content="{x:Static assets:LangResources.OkText}"/>
+				<Button Click="CancelHandler"
+						Content="{x:Static assets:LangResources.CancelText}"/>
+			</WrapPanel>
+		</DockPanel>
+	</Grid>
 </Window>
