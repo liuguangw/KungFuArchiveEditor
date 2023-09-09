@@ -117,7 +117,7 @@ public class BagViewModel : ViewModelBase
             {
                 vm.MainProps.Add(new EquipPropViewModel()
                 {
-                    IsMainProp = true,
+                    //IsMainProp = true,
                     Id = mainProp.Id,
                     Value = mainProp.Value,
                 });

@@ -82,7 +82,12 @@ public class BagItemEquipViewModel : BagItemViewModel
 
     public override string GetItemName(int classID)
     {
-        return GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? "未知";
+        GameConfigData.Equips.TryGetValue(classID, out string? equipName);
+        if (equipName != null)
+        {
+            return equipName;
+        }
+        return "未知";
     }
 
     /// <summary>

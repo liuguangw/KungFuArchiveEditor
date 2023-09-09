@@ -1,4 +1,5 @@
 using KungFuArchiveEditor.Assets;
+using KungFuArchiveEditor.GameConfig;
 using KungFuArchiveEditor.Tools;
 using Newtonsoft.Json.Linq;
 using System;
@@ -27,7 +28,7 @@ public class AbilityItemViewModel : ViewModelBase, INotifyDataErrorInfo
     public bool HasErrors => errors.Count > 0;
     public int ClassID => classID;
 
-    public string Name => GetItemName(classID);
+    public string Name => GetName(classID);
     public int Level
     {
         get => level;
@@ -38,9 +39,9 @@ public class AbilityItemViewModel : ViewModelBase, INotifyDataErrorInfo
                 errors.Clear();
                 RaiseErrorsChanged();
             }
-            if (value < 0 || value > 6)
+            if (value < 0 || value > MaxLevel)
             {
-                errors.Add(new ValidationResult(LangResources.Level + " <= 6"));
+                errors.Add(new ValidationResult(LangResources.Level + " <= " + MaxLevel.ToString()));
                 RaiseErrorsChanged();
             }
             RaiseAndSetIfChanged(ref level, value, levelObject);
@@ -51,6 +52,9 @@ public class AbilityItemViewModel : ViewModelBase, INotifyDataErrorInfo
         get => exp;
         set => RaiseAndSetIfChanged(ref exp, value, expObject);
     }
+
+    public int MaxLevel => GetMaxLevel(classID);
+
     #endregion
 
     public IEnumerable GetErrors(string? propertyName)
@@ -70,9 +74,23 @@ public class AbilityItemViewModel : ViewModelBase, INotifyDataErrorInfo
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Level)));
     }
 
-    public string GetItemName(int classID)
+    private static string GetName(int classID)
     {
-        return GameMetaData.GetItemName(classID, GameMetaData.MetaType.Ability) ?? "未知";
+        GameConfigData.Abilities.TryGetValue(classID, out AbilityConfig? abilityConfig);
+        if (abilityConfig != null)
+        {
+            return abilityConfig.Name;
+        }
+        return "未知";
+    }
+    private static int GetMaxLevel(int classID)
+    {
+        GameConfigData.Abilities.TryGetValue(classID, out AbilityConfig? abilityConfig);
+        if (abilityConfig != null)
+        {
+            return abilityConfig.MaxLevel;
+        }
+        return 6;
     }
 
     public void LoadData(JToken jsonData)

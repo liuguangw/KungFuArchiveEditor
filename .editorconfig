@@ -17,3 +17,4 @@ charset = utf-8
 # 缩进
 indent_style = space
 indent_size = 4
+csharp_style_namespace_declarations = file_scoped:silent

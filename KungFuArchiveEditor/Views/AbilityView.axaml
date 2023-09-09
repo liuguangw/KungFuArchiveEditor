@@ -20,7 +20,13 @@
 			<DataGridTemplateColumn Header="{x:Static assets:LangResources.Level}"  Width="*">
 				<DataGridTemplateColumn.CellTemplate>
 					<DataTemplate>
-						<TextBox Margin="5" Text="{Binding Level}" />
+						<WrapPanel>
+							<TextBox Margin="5" Text="{Binding Level}" />
+							<TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+								<Run>/</Run>
+								<Run Text="{Binding MaxLevel}"/>
+							</TextBlock>
+						</WrapPanel>
 					</DataTemplate>
 				</DataGridTemplateColumn.CellTemplate>
 			</DataGridTemplateColumn>

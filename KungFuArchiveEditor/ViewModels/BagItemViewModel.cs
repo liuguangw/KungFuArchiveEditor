@@ -81,6 +81,11 @@ public class BagItemViewModel : ViewModelBase
 
     public virtual string GetItemName(int classID)
     {
-        return GameMetaData.GetItemName(classID) ?? "未知";
+        GameConfigData.Items.TryGetValue(classID, out string? itemName);
+        if (itemName != null)
+        {
+            return itemName;
+        }
+        return "未知";
     }
 }

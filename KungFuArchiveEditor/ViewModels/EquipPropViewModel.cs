@@ -5,11 +5,11 @@ namespace KungFuArchiveEditor.ViewModels;
 
 public class EquipPropViewModel : ViewModelBase
 {
-    private bool isMainProp = false;
+    //private bool isMainProp = false;
     private int id = 0;
     private int propValue = 0;
 
-    public bool IsMainProp { get => isMainProp; set => isMainProp = value; }
+    //public bool IsMainProp { get => isMainProp; set => isMainProp = value; }
     public int Id
     {
         get => id;
@@ -31,8 +31,12 @@ public class EquipPropViewModel : ViewModelBase
     {
         get
         {
-            var metaType = isMainProp ? GameMetaData.MetaType.EquipMainProp : GameMetaData.MetaType.EquipAddonProp;
-            return GameMetaData.GetItemName(id, metaType) ?? "未知属性";
+            GameConfigData.EquipAddonProps.TryGetValue(id, out string? propName);
+            if (propName != null)
+            {
+                return propName;
+            }
+            return "未知属性";
         }
     }
 }

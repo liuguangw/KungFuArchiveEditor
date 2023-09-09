@@ -1,7 +1,6 @@
 using KungFuArchiveEditor.Tools;
 using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reactive;
 
 namespace KungFuArchiveEditor.ViewModels;
@@ -48,7 +47,18 @@ public class EquipDialogViewModel : BagViewModel
     /// <summary>
     /// 装备名称
     /// </summary>
-    public string Name => GameMetaData.GetItemName(classID, GameMetaData.MetaType.Equip) ?? "未知";
+    public string Name
+    {
+        get
+        {
+            GameConfigData.Equips.TryGetValue(classID, out string? equipName);
+            if (equipName != null)
+            {
+                return equipName;
+            }
+            return "未知";
+        }
+    }
     public ObservableCollection<EquipPropViewModel> MainProps { get; } = new();
     public ObservableCollection<EquipPropViewModel> AddonProps { get; } = new();
     public ReactiveCommand<Unit, Unit> AddPropLineCommand { get; }

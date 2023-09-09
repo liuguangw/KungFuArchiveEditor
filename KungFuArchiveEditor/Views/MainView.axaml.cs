@@ -18,7 +18,7 @@ public partial class MainView : UserControl
     {
         try
         {
-            await GameMetaData.LoadAsync();
+            await GameConfigData.LoadAsync();
         }
         catch (Exception ex)
         {
