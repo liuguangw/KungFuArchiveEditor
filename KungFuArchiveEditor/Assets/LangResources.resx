@@ -226,4 +226,16 @@
   <data name="ActionText" xml:space="preserve">
     <value>action</value>
   </data>
+  <data name="TabAbilityHeader" xml:space="preserve">
+    <value>ability</value>
+  </data>
+  <data name="AbilityName" xml:space="preserve">
+    <value>ability name</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>level</value>
+  </data>
+  <data name="Exp" xml:space="preserve">
+    <value>exp</value>
+  </data>
 </root>

@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+             xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+             mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
+             x:DataType="vm:AbilityViewModel"
+             x:Class="KungFuArchiveEditor.Views.AbilityView">
+	<DataGrid ItemsSource="{Binding ItemList}"
+			IsReadOnly="True"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
+			GridLinesVisibility="All"
+			BorderThickness="1" BorderBrush="Gray">
+		<DataGrid.Columns>
+			<DataGridTextColumn Header="{x:Static assets:LangResources.AbilityName}" Width="*"
+                    Binding="{Binding Name}"/>
+			<DataGridTextColumn Header="class_id" Width="*"
+                    Binding="{Binding ClassID}" />
+			<DataGridTemplateColumn Header="{x:Static assets:LangResources.Level}"  Width="*">
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate>
+						<TextBox Margin="5" Text="{Binding Level}" />
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+			<DataGridTemplateColumn Header="{x:Static assets:LangResources.Exp}"  Width="*">
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate>
+						<TextBox Margin="5" Text="{Binding Exp}" />
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+		</DataGrid.Columns>
+	</DataGrid>
+</UserControl>

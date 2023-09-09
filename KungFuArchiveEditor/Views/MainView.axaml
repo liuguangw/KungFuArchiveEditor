@@ -34,6 +34,9 @@
             <TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
                 <views:BagView DataContext="{Binding BagVm}" />
             </TabItem>
+			<TabItem Header="{x:Static assets:LangResources.TabAbilityHeader}">
+				<views:AbilityView DataContext="{Binding AbilityVm}" />
+			</TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>

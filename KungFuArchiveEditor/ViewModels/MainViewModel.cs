@@ -16,9 +16,11 @@ public class MainViewModel : ViewModelBase
 {
     private JObject? worldJsonData;
     private IStorageFile? currentJsonFile;
+    private IStorageFolder? lastOpenFolder;
 
     public RoleViewModel RoleVm { get; } = new();
     public BagViewModel BagVm { get; } = new();
+    public AbilityViewModel AbilityVm { get; } = new();
 
     public async void SaveFileAction()
     {
@@ -75,6 +77,35 @@ public class MainViewModel : ViewModelBase
             FileTypeFilter = new[] { fileTypeFilter },
             AllowMultiple = false
         };
+        await SetSuggestedFolderAsync(storageProvider, openOptions);
+        var files = await storageProvider.OpenFilePickerAsync(openOptions);
+        if (files.Count >= 1)
+        {
+            //记录最后打开的文件夹
+            lastOpenFolder = await files[0].GetParentAsync();
+            //加载json文件内容
+            worldJsonData = await LoadFileAsync(files[0]);
+            if (worldJsonData != null)
+            {
+
+                LoadModelData(worldJsonData);
+                currentJsonFile = files[0];
+            }
+        }
+    }
+
+    /// <summary>
+    /// 选择文件时,设置默认打开的文件夹
+    /// </summary>
+    /// <param name="storageProvider"></param>
+    /// <param name="openOptions"></param>
+    private async Task SetSuggestedFolderAsync(IStorageProvider storageProvider, FilePickerOpenOptions openOptions)
+    {
+        if(lastOpenFolder != null)
+        {
+            openOptions.SuggestedStartLocation = lastOpenFolder;
+            return;
+        }
         var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         if (appDataDir != null)
         {
@@ -83,19 +114,8 @@ public class MainViewModel : ViewModelBase
                     appDataDir,
                     "HMS_00","Saved","PersistentDownloadDir"
                 };
-            var jsonDir = Path.Combine(pathDirs);
-            openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(jsonDir);
-        }
-        var files = await storageProvider.OpenFilePickerAsync(openOptions);
-        if (files.Count >= 1)
-        {
-            worldJsonData = await LoadFileAsync(files[0]);
-            if (worldJsonData != null)
-            {
-
-                LoadModelData(worldJsonData);
-                currentJsonFile = files[0];
-            }
+            var saveDir = Path.Combine(pathDirs);
+            openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(saveDir);
         }
     }
 
@@ -147,6 +167,16 @@ public class MainViewModel : ViewModelBase
         if (containerEntityMap is JObject entryMap)
         {
             BagVm.LoadBagItemList(entryMap);
+        }
+        //能力列表
+        var abilityEntityMap = playerData.SelectToken("component_data.ability_container.entity_map");
+        if (abilityEntityMap == null)
+        {
+            return;
+        }
+        if (abilityEntityMap is JObject abilityMap)
+        {
+            AbilityVm.LoadItemList(abilityMap);
         }
     }
 

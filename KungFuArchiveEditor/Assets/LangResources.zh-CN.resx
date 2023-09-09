@@ -225,4 +225,16 @@
   <data name="ActionText" xml:space="preserve">
     <value>操作</value>
   </data>
+  <data name="TabAbilityHeader" xml:space="preserve">
+    <value>能力</value>
+  </data>
+  <data name="AbilityName" xml:space="preserve">
+    <value>能力名称</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="Exp" xml:space="preserve">
+    <value>当前经验值</value>
+  </data>
 </root>
