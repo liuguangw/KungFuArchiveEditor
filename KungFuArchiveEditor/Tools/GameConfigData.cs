@@ -11,7 +11,7 @@ namespace KungFuArchiveEditor.Tools;
 public static class GameConfigData
 {
     public static readonly Dictionary<int, ItemConfig> Items = new();
-    public static readonly Dictionary<int, string> Equips = new();
+    public static readonly Dictionary<int, EquipConfig> Equips = new();
     public static readonly Dictionary<int, string> EquipMainProps = new();
     public static readonly Dictionary<int, string> EquipAddonProps = new();
     public static readonly Dictionary<int, AbilityConfig> Abilities = new();
@@ -27,7 +27,7 @@ public static class GameConfigData
         var dataColl = new (string, int, Action<string[]>)[]
         {
             ("item.txt",3,ItemRowCallback),
-            ("equipment.txt",2,fields => CommonRowCallback(fields,Equips)),
+            ("equipment.txt",3,EquipRowCallback),
             ("equip_main_prop.txt",2,fields => CommonRowCallback(fields,EquipMainProps)),
             ("equip_addon_prop.txt",2,fields => CommonRowCallback(fields,EquipAddonProps)),
             ("ability.txt",3,AbilityRowCallback)
@@ -67,6 +67,28 @@ public static class GameConfigData
         var classID = int.Parse(classIDStr);
         var maxAmount = int.Parse(maxAmountStr);
         Items.Add(classID, new ItemConfig(classID, maxAmount, name));
+    }
+    /// <summary>
+    /// 装备
+    /// </summary>
+    /// <param name="fields"></param>
+    private static void EquipRowCallback(string[] fields)
+    {
+        if (fields.Length < 3)
+        {
+            return;
+        }
+        var classIDStr = fields[0].Trim();
+        var equipTypeStr = fields[1].Trim();
+        var name = fields[2].Trim();
+        //
+        if (string.IsNullOrEmpty(classIDStr) || string.IsNullOrEmpty(equipTypeStr) || string.IsNullOrEmpty(name))
+        {
+            return;
+        }
+        var classID = int.Parse(classIDStr);
+        var equipType = int.Parse(equipTypeStr);
+        Equips.Add(classID, new EquipConfig(classID, equipType, name));
     }
     /// <summary>
     /// 能力

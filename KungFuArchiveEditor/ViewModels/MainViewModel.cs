@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using KungFuArchiveEditor.Assets;
+using KungFuArchiveEditor.Tools;
 using KungFuArchiveEditor.Views;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -90,8 +91,18 @@ public class MainViewModel : ViewModelBase
 
                 LoadModelData(worldJsonData);
                 currentJsonFile = files[0];
+                InitUidTool(worldJsonData, lastOpenFolder!);
             }
         }
+    }
+
+    private static async void InitUidTool(JObject shareWorldData, IStorageFolder saveFolder)
+    {
+        //在后台执行
+        await Task.Run(async () =>
+        {
+            await UidTool.InitToolAsync(shareWorldData, saveFolder);
+        });
     }
 
     /// <summary>
@@ -101,7 +112,7 @@ public class MainViewModel : ViewModelBase
     /// <param name="openOptions"></param>
     private async Task SetSuggestedFolderAsync(IStorageProvider storageProvider, FilePickerOpenOptions openOptions)
     {
-        if(lastOpenFolder != null)
+        if (lastOpenFolder != null)
         {
             openOptions.SuggestedStartLocation = lastOpenFolder;
             return;
@@ -166,7 +177,7 @@ public class MainViewModel : ViewModelBase
         }
         if (containerEntityMap is JObject entryMap)
         {
-            BagVm.LoadBagItemList(entryMap);
+            BagVm.LoadBagItemList(playerUid, entryMap);
         }
         //能力列表
         var abilityEntityMap = playerData.SelectToken("component_data.ability_container.entity_map");

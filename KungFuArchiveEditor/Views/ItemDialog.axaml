@@ -1,0 +1,70 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Width="340" Height="200"
+        xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+        xmlns:vm="using:KungFuArchiveEditor.ViewModels"
+        x:Class="KungFuArchiveEditor.Views.ItemDialog"
+        x:DataType="vm:ItemDialogViewModel"
+        WindowStartupLocation="CenterOwner"
+        Icon="/Assets/avalonia-logo.ico" ShowInTaskbar="False"
+        Title="{x:Static assets:LangResources.SendItemTitle}">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="100,160,*" Margin="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" MinHeight="30" />
+                <RowDefinition Height="auto" MinHeight="30" />
+                <RowDefinition Height="auto" MinHeight="30" />
+            </Grid.RowDefinitions>
+            <Grid.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="TextBlock[(Grid.Column)=0]">
+                    <Setter Property="TextAlignment" Value="Right"/>
+                    <Setter Property="Padding" Value="0,0,8,0"/>
+                </Style>
+            </Grid.Styles>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="class_id"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="0,5" Text="{Binding ClassID}" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static assets:LangResources.ItemName}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1"
+					   Foreground="{Binding NameColor}" Text="{Binding Name}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.Amount}"/>
+            <WrapPanel Grid.Row="2" Grid.Column="1">
+                <TextBox Margin="0,5" Text="{Binding Amount}" MinWidth="70" />
+                <TextBlock>
+                    <Run>/</Run>
+                    <Run Text="{Binding MaxAmount}" />
+                </TextBlock>
+            </WrapPanel>
+        </Grid>
+		<WrapPanel DockPanel.Dock="Bottom" FlowDirection="RightToLeft" VerticalAlignment="Bottom"
+				   Height="40">
+			<WrapPanel.Styles>
+				<!--定义按钮的样式-->
+				<Style Selector="Button">
+					<Setter Property="MinWidth" Value="90"/>
+					<Setter Property="Height" Value="30"/>
+					<Setter Property="Margin" Value="5,5,0,5"/>
+					<Setter Property="HorizontalContentAlignment" Value="Center"/>
+					<Setter Property="VerticalContentAlignment" Value="Center"/>
+				</Style>
+				<Style Selector="Button.confirm">
+					<Setter Property="Background" Value="#9ac046"/>
+					<Setter Property="Foreground" Value="White"/>
+					<Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background" Value="#a9e524"/>
+						<Setter Property="Foreground" Value="White"/>
+					</Style>
+				</Style>
+			</WrapPanel.Styles>
+			<Button Click="ConfirmHandler" Classes="confirm"
+					IsEnabled="{Binding CanAdd}"
+					Content="{x:Static assets:LangResources.OkText}"/>
+			<Button Click="CancelHandler"
+					Content="{x:Static assets:LangResources.CancelText}"/>
+		</WrapPanel>
+    </DockPanel>
+</Window>

@@ -1,3 +1,4 @@
+using KungFuArchiveEditor.GameConfig;
 using KungFuArchiveEditor.Tools;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -9,6 +10,8 @@ public class BagItemEquipViewModel : BagItemViewModel
     private int rarity = 0;
 
     private JValue? rarityObject = null;
+    private JArray? mainPropsObject = null;
+    private JArray? addonPropsObject = null;
     public int Rarity
     {
         get => rarity;
@@ -38,6 +41,7 @@ public class BagItemEquipViewModel : BagItemViewModel
         }
         if (jsonData["main_props"] is JArray propNodes)
         {
+            mainPropsObject = propNodes;
             foreach (var propNode in propNodes)
             {
                 CheckAddPropNode(propNode, MainProps);
@@ -45,6 +49,7 @@ public class BagItemEquipViewModel : BagItemViewModel
         }
         if (jsonData["addon_props"] is JArray addonPropNodes)
         {
+            addonPropsObject = addonPropNodes;
             foreach (var propNode in addonPropNodes)
             {
                 CheckAddPropNode(propNode, AddonProps);
@@ -82,10 +87,10 @@ public class BagItemEquipViewModel : BagItemViewModel
 
     public override string GetItemName(int classID)
     {
-        GameConfigData.Equips.TryGetValue(classID, out string? equipName);
-        if (equipName != null)
+        GameConfigData.Equips.TryGetValue(classID, out EquipConfig? equipConfig);
+        if (equipConfig != null)
         {
-            return equipName;
+            return equipConfig.Name;
         }
         return "未知";
     }
@@ -95,34 +100,30 @@ public class BagItemEquipViewModel : BagItemViewModel
     /// </summary>
     public void UpdatePropsJsonData()
     {
-        if (itemJsonData == null)
+        if (mainPropsObject == null || addonPropsObject == null)
         {
             return;
         }
-        var propNames = new string[] { "main_props", "addon_props" };
+        var propObjects = new JArray[] { mainPropsObject, addonPropsObject };
         var propCollections = new ObservableCollection<EquipPropViewModel>[] { MainProps, AddonProps };
-        for (var i = 0; i < propNames.Length; i++)
+        for (var i = 0; i < propObjects.Length; i++)
         {
-            var propName = propNames[i];
+            var propJsonNodes = propObjects[i];
+            //清理
+            propJsonNodes.Clear();
+            //重新添加json对象
             var propCollection = propCollections[i];
-            if (itemJsonData[propName] is JArray propJsonNodes)
+            foreach (var itemProp in propCollection)
             {
-                //清理
-                propJsonNodes.Clear();
-                //重新添加json对象
-                foreach (var itemProp in propCollection)
+                if (itemProp == null)
                 {
-                    if (itemProp == null)
-                    {
-                        continue;
-                    }
-                    var propJsonNode = new JArray{
+                    continue;
+                }
+                var propJsonNode = new JArray{
                         itemProp.Id,
                         itemProp.Value
                     };
-                    propJsonNodes.Add(propJsonNode);
-                }
-
+                propJsonNodes.Add(propJsonNode);
             }
         }
     }

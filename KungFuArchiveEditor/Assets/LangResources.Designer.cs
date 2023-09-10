@@ -385,6 +385,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 distribute items 的本地化字符串。
+        /// </summary>
+        public static string SendItemTitle {
+            get {
+                return ResourceManager.GetString("SendItemTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 ability 的本地化字符串。
         /// </summary>
         public static string TabAbilityHeader {

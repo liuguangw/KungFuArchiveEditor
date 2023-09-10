@@ -238,4 +238,7 @@
   <data name="Exp" xml:space="preserve">
     <value>exp</value>
   </data>
+  <data name="SendItemTitle" xml:space="preserve">
+    <value>distribute items</value>
+  </data>
 </root>

@@ -8,34 +8,39 @@
              mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
              x:DataType="vm:BagViewModel" x:CompileBindings="False"
              x:Class="KungFuArchiveEditor.Views.BagView">
-    <DataGrid ItemsSource="{Binding BagItemList}"
-          IsReadOnly="True"
-          CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
-          GridLinesVisibility="All"
-          BorderThickness="1" BorderBrush="Gray">
-        <DataGrid.Resources>
-            <tools:AmountTemplateSelector x:Key="amountTemplate">
-                <DataTemplate x:Key="default" DataType="{x:Type vm:BagItemViewModel}">
-                    <TextBox Margin="5" Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
-                </DataTemplate>
-                <DataTemplate x:Key="equip" DataType="{x:Type vm:BagItemEquipViewModel}">
-					<!--命令绑定到BagViewModel上执行-->
-                    <Button Margin="5" Content="{x:Static assets:LangResources.ModifyEquipment}"
-							Command="{Binding $parent[DataGrid].DataContext.EditEquipCommand}" CommandParameter="{Binding}"/>
-                </DataTemplate>
-            </tools:AmountTemplateSelector>
-        </DataGrid.Resources>
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="{x:Static assets:LangResources.ItemPosition}" Width="*"
-                    Binding="{Binding PosKey}"/>
-            <DataGridTextColumn Header="{x:Static assets:LangResources.EntityType}" Width="*"
-                    Binding="{Binding EntityType}" />
-            <DataGridTextColumn Header="class_id" Width="*"
-                    Binding="{Binding ClassID}" />
-            <DataGridTextColumn Header="{x:Static assets:LangResources.ItemName}" Width="2*"
-                    Binding="{Binding Name}" />
-            <DataGridTemplateColumn Header="{x:Static assets:LangResources.Amount}"  Width="*"
-                                    CellTemplate="{DynamicResource amountTemplate}"/>
-        </DataGrid.Columns>
-    </DataGrid>
+	<DockPanel>
+		<WrapPanel DockPanel.Dock="Top" Margin="0,0,0,5">
+			<Button Command="{Binding AddItemCommand}" Content="{x:Static assets:LangResources.SendItemTitle}" />
+		</WrapPanel>
+		<DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding BagItemList}"
+			  IsReadOnly="True"
+			  CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="False"
+			  GridLinesVisibility="All"
+			  BorderThickness="1" BorderBrush="Gray">
+			<DataGrid.Resources>
+				<tools:AmountTemplateSelector x:Key="amountTemplate">
+					<DataTemplate x:Key="default" DataType="{x:Type vm:BagItemViewModel}">
+						<TextBox Margin="5" Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" />
+					</DataTemplate>
+					<DataTemplate x:Key="equip" DataType="{x:Type vm:BagItemEquipViewModel}">
+						<!--命令绑定到BagViewModel上执行-->
+						<Button Margin="5" Content="{x:Static assets:LangResources.ModifyEquipment}"
+								Command="{Binding $parent[DataGrid].DataContext.EditEquipCommand}" CommandParameter="{Binding}"/>
+					</DataTemplate>
+				</tools:AmountTemplateSelector>
+			</DataGrid.Resources>
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="{x:Static assets:LangResources.ItemPosition}" Width="*"
+						Binding="{Binding PosKey}"/>
+				<DataGridTextColumn Header="{x:Static assets:LangResources.EntityType}" Width="*"
+						Binding="{Binding EntityType}" />
+				<DataGridTextColumn Header="class_id" Width="*"
+						Binding="{Binding ClassID}" />
+				<DataGridTextColumn Header="{x:Static assets:LangResources.ItemName}" Width="2*"
+						Binding="{Binding Name}" />
+				<DataGridTemplateColumn Header="{x:Static assets:LangResources.Amount}"  Width="*"
+										CellTemplate="{DynamicResource amountTemplate}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
 </UserControl>

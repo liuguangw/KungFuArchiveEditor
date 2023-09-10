@@ -1,3 +1,4 @@
+using KungFuArchiveEditor.GameConfig;
 using KungFuArchiveEditor.Tools;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -51,10 +52,10 @@ public class EquipDialogViewModel : BagViewModel
     {
         get
         {
-            GameConfigData.Equips.TryGetValue(classID, out string? equipName);
-            if (equipName != null)
+            GameConfigData.Equips.TryGetValue(classID, out EquipConfig? equipConfig);
+            if (equipConfig != null)
             {
-                return equipName;
+                return equipConfig.Name;
             }
             return "未知";
         }

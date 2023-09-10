@@ -21,7 +21,6 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
     private int amount = 1;
 
     protected JValue? amountObject = null;
-    protected JToken? itemJsonData = null;
     private readonly List<ValidationResult> errors = new();
     public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
     #endregion
@@ -72,7 +71,6 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
     /// <param name="jsonData">json对象</param>
     public virtual void LoadItemData(int[] posArr, int itemEntityType, JToken jsonData)
     {
-        itemJsonData = jsonData;
         mainPos = posArr[0];
         subPos = posArr[1];
         pos = posArr[2];
@@ -93,7 +91,49 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
                 amountObject = value;
             }
         }
+    }
 
+    /// <summary>
+    /// 创建一个新的节点
+    /// </summary>
+    /// <param name="posArr"></param>
+    /// <param name="classID"></param>
+    /// <param name="amount"></param>
+    /// <param name="uid"></param>
+    /// <param name="ownerUid"></param>
+    /// <returns></returns>
+    public virtual JObject InitNewJson(int[] posArr, int classID, int amount, string uid, string ownerUid)
+    {
+        mainPos = posArr[0];
+        subPos = posArr[1];
+        pos = posArr[2];
+        entityType = 7;
+        this.classID = classID;
+        this.amount = amount;
+        //
+        var jsonData = new JObject
+        {
+            ["uid"] = new JValue(uid),
+            ["class_id"] = new JValue(classID),
+            ["entity_type"] = new JValue(entityType),
+            ["container_position"] = new JValue(PosKey)
+        };
+        amountObject = new JValue(amount);
+        jsonData["amount"] = amountObject;
+        jsonData["owner_uid"] = new JValue(ownerUid);
+        var emptyFields = new string[]
+        {
+            "origin_uid","origin_owner_name","murderer_name","fabricator_uid","murderer_uid",
+            "key_owner_uid","horse_uid"
+        };
+        foreach (var fieldName in emptyFields)
+        {
+            jsonData.Add(fieldName, new JValue(string.Empty));
+        }
+        jsonData["tile_id"]=new JValue(0);
+        jsonData["is_world_item"] = new JValue(0);
+        jsonData["component_data"]=new JObject();
+        return jsonData;
     }
 
     public virtual string GetItemName(int classID)

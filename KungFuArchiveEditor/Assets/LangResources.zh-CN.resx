@@ -237,4 +237,7 @@
   <data name="Exp" xml:space="preserve">
     <value>当前经验值</value>
   </data>
+  <data name="SendItemTitle" xml:space="preserve">
+    <value>发放物品</value>
+  </data>
 </root>
