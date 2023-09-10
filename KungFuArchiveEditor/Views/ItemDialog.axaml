@@ -33,7 +33,7 @@
 					   Foreground="{Binding NameColor}" Text="{Binding Name}"/>
             <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static assets:LangResources.Amount}"/>
             <WrapPanel Grid.Row="2" Grid.Column="1">
-                <TextBox Margin="0,5" Text="{Binding Amount}" MinWidth="70" />
+                <TextBox Margin="0,5" Text="{Binding Amount}" IsEnabled="{Binding HasAmount}" MinWidth="70" />
                 <TextBlock>
                     <Run>/</Run>
                     <Run Text="{Binding MaxAmount}" />
