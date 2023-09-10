@@ -1,9 +1,16 @@
+using KungFuArchiveEditor.GameConfig;
 using KungFuArchiveEditor.Tools;
 using Newtonsoft.Json.Linq;
+using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using KungFuArchiveEditor.Assets;
 
 namespace KungFuArchiveEditor.ViewModels;
 
-public class BagItemViewModel : ViewModelBase
+public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
 {
     #region Fields
     private int mainPos = 0;
@@ -12,13 +19,15 @@ public class BagItemViewModel : ViewModelBase
     private int classID = 0;
     private int entityType = 0;
     private int amount = 1;
-    private bool hasAmount = false;
 
     protected JValue? amountObject = null;
     protected JToken? itemJsonData = null;
+    private readonly List<ValidationResult> errors = new();
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
     #endregion
 
     #region Properties
+    public bool HasErrors => errors.Count > 0;
     public int MainPos => mainPos;
     public int SubPos => subPos;
     public int Pos => pos;
@@ -32,13 +41,27 @@ public class BagItemViewModel : ViewModelBase
     public int Amount
     {
         get => amount;
-        set => RaiseAndSetIfChanged(ref amount, value, amountObject);
+        set
+        {
+            if (HasErrors)
+            {
+                errors.Clear();
+                RaiseErrorsChanged();
+            }
+            var maxAmount = GetMaxAmount(classID);
+            if (value < 0 || value > maxAmount)
+            {
+                errors.Add(new ValidationResult(LangResources.Amount + " <= " + maxAmount.ToString()));
+                RaiseErrorsChanged();
+            }
+            RaiseAndSetIfChanged(ref amount, value, amountObject);
+        }
     }
 
     /// <summary>
-    /// 是否有amount这个字段
+    /// 是否可以修改amount
     /// </summary>
-    public bool HasAmount => hasAmount;
+    public bool HasAmount => GetMaxAmount(classID) > 1;
     #endregion
 
     /// <summary>
@@ -47,7 +70,7 @@ public class BagItemViewModel : ViewModelBase
     /// <param name="posArr">位置(3个数字)</param>
     /// <param name="itemEntityType">实体类型</param>
     /// <param name="jsonData">json对象</param>
-    public virtual void LoadItemData(int[] posArr,int itemEntityType, JToken jsonData)
+    public virtual void LoadItemData(int[] posArr, int itemEntityType, JToken jsonData)
     {
         itemJsonData = jsonData;
         mainPos = posArr[0];
@@ -65,27 +88,47 @@ public class BagItemViewModel : ViewModelBase
         if (objectNode != null)
         {
             amount = objectNode.ToObject<int>();
-            hasAmount = true;
             if (objectNode is JValue value)
             {
                 amountObject = value;
             }
-        }
-        else
-        {
-            amount = 1;
-            hasAmount = false;
         }
 
     }
 
     public virtual string GetItemName(int classID)
     {
-        GameConfigData.Items.TryGetValue(classID, out string? itemName);
-        if (itemName != null)
+        GameConfigData.Items.TryGetValue(classID, out ItemConfig? itemConfig);
+        if (itemConfig != null)
         {
-            return itemName;
+            return itemConfig.Name;
         }
         return "未知";
+    }
+
+    private static int GetMaxAmount(int classID)
+    {
+        GameConfigData.Items.TryGetValue(classID, out ItemConfig? itemConfig);
+        if (itemConfig != null)
+        {
+            return itemConfig.MaxAmount;
+        }
+        return 1;
+    }
+    public IEnumerable GetErrors(string? propertyName)
+    {
+        if (propertyName == nameof(Amount))
+        {
+            return errors;
+        }
+        return Array.Empty<ValidationResult>();
+    }
+
+    /// <summary>
+    /// 通知错误状态更新
+    /// </summary>
+    private void RaiseErrorsChanged()
+    {
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Amount)));
     }
 }
