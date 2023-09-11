@@ -13,12 +13,12 @@ namespace KungFuArchiveEditor.ViewModels;
 public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
 {
     #region Fields
-    private int mainPos = 0;
-    private int subPos = 0;
-    private int pos = 0;
-    private int classID = 0;
-    private int entityType = 0;
-    private int amount = 1;
+    protected int mainPos = 0;
+    protected int subPos = 0;
+    protected int pos = 0;
+    protected int classID = 0;
+    protected int entityType = 0;
+    protected int amount = 1;
 
     protected JValue? amountObject = null;
     private readonly List<ValidationResult> errors = new();
@@ -94,15 +94,13 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
     }
 
     /// <summary>
-    /// 创建一个新的节点
+    /// 初始化新的物品对象
     /// </summary>
     /// <param name="posArr"></param>
     /// <param name="classID"></param>
     /// <param name="amount"></param>
-    /// <param name="uid"></param>
-    /// <param name="ownerUid"></param>
     /// <returns></returns>
-    public virtual JObject InitNewJson(int[] posArr, int classID, int amount, string uid, string ownerUid)
+    public virtual void InitItem(int[] posArr, int classID, int amount = 1)
     {
         mainPos = posArr[0];
         subPos = posArr[1];
@@ -110,7 +108,17 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
         entityType = 7;
         this.classID = classID;
         this.amount = amount;
-        //
+        amountObject = new JValue(amount);
+    }
+
+    /// <summary>
+    /// 转换为新的json对象
+    /// </summary>
+    /// <param name="uid"></param>
+    /// <param name="ownerUid"></param>
+    /// <returns></returns>
+    public virtual JObject ToNewJsonData(string uid, string ownerUid)
+    {
         var jsonData = new JObject
         {
             ["uid"] = new JValue(uid),
@@ -118,8 +126,10 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
             ["entity_type"] = new JValue(entityType),
             ["container_position"] = new JValue(PosKey)
         };
-        amountObject = new JValue(amount);
-        jsonData["amount"] = amountObject;
+        if (amountObject != null)
+        {
+            jsonData["amount"] = amountObject;
+        }
         jsonData["owner_uid"] = new JValue(ownerUid);
         var emptyFields = new string[]
         {
@@ -130,9 +140,9 @@ public class BagItemViewModel : ViewModelBase, INotifyDataErrorInfo
         {
             jsonData.Add(fieldName, new JValue(string.Empty));
         }
-        jsonData["tile_id"]=new JValue(0);
+        jsonData["tile_id"] = new JValue(0);
         jsonData["is_world_item"] = new JValue(0);
-        jsonData["component_data"]=new JObject();
+        jsonData["component_data"] = new JObject();
         return jsonData;
     }
 

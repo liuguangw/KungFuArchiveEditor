@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -116,16 +115,18 @@ public class BagViewModel : ViewModelBase
     public async void AddItemAction()
     {
         var dialogVm = await ShowItemDialogAsync(vm => vm.ClassID = 80001);
-        if (dialogVm.Confirmed)
+        if (!dialogVm.Confirmed)
         {
-            Debug.WriteLine($"class_id={dialogVm.ClassID} name={dialogVm.Name} amount={dialogVm.Amount}/{dialogVm.MaxAmount}");
-            Debug.WriteLine($"is_item={dialogVm.IsItem}, is_equip={dialogVm.IsEquip}");
+            return;
+        }
+        //Debug.WriteLine($"class_id={dialogVm.ClassID} name={dialogVm.Name} amount={dialogVm.Amount}/{dialogVm.MaxAmount}");
+        //Debug.WriteLine($"is_item={dialogVm.IsItem}, is_equip={dialogVm.IsEquip}");
+
+        if (dialogVm.IsItem)
+        {
             try
             {
-                if (dialogVm.IsItem)
-                {
-                    ProcessAddItem(dialogVm);
-                }
+                ProcessAddItem(dialogVm);
                 await MainViewModel.ShowMessageTipAsync(vm =>
                 {
                     vm.Title = "发放成功";
@@ -142,6 +143,10 @@ public class BagViewModel : ViewModelBase
                     vm.TextColor = Brushes.Red;
                 });
             }
+        }
+        else if (dialogVm.IsEquip)
+        {
+            await AddEquipAsync(dialogVm.ClassID);
         }
     }
 
@@ -210,11 +215,12 @@ public class BagViewModel : ViewModelBase
                 }
             }
         }
-        long itemUid = UidTool.NextUid();
         var posArr = new int[] { mainPos, subPos, pos };
-        var jsonData = item.InitNewJson(posArr, classID, amount, itemUid.ToString(), playerUid);
+        item.InitItem(posArr, classID, amount);
         if (itemListData != null)
         {
+            long itemUid = UidTool.NextUid();
+            var jsonData = item.ToNewJsonData(itemUid.ToString(), playerUid);
             itemListData.Add(item.PosKey, jsonData);
             //判断界面上的新物品行应该放到哪里
             if (insertIndex < BagItemList.Count)
@@ -225,6 +231,98 @@ public class BagViewModel : ViewModelBase
             {
                 BagItemList.Add(item);
             }
+        }
+    }
+
+    private async Task AddEquipAsync(int classID)
+    {
+        var equipItem = new BagItemEquipViewModel();
+        var mainPos = 2;
+        var subPos = 0;
+        var pos = 0;
+        var insertIndex = 0;
+        for (var i = 0; i < BagItemList.Count; i++)
+        {
+            var bagItem = BagItemList[i];
+            if (bagItem.MainPos == mainPos && bagItem.SubPos == subPos)
+            {
+                insertIndex = i + 1;
+                if (pos <= bagItem.Pos)
+                {
+                    pos = bagItem.Pos + 1;
+                }
+            }
+        }
+        var posArr = new int[] { mainPos, subPos, pos };
+        equipItem.InitItem(posArr, classID);
+        //
+        var dialogVm = await ShowEquipDialogAsync(vm =>
+        {
+            vm.Title = "发放装备";
+            vm.ClassID = equipItem.ClassID;
+            vm.Rarity = equipItem.Rarity;
+            vm.PosKey = equipItem.PosKey;
+            //复制装备属性到发放界面
+            foreach (var mainProp in equipItem.MainProps)
+            {
+                vm.MainProps.Add(mainProp);
+            }
+            foreach (var addonProp in equipItem.AddonProps)
+            {
+                vm.AddonProps.Add(addonProp);
+            }
+        });
+        //确认修改之后,再复制到装备对象
+        if (!dialogVm.Confirmed)
+        {
+            return;
+        }
+        equipItem.Rarity = dialogVm.Rarity;
+        equipItem.MainProps.Clear();
+        equipItem.AddonProps.Clear();
+        foreach (var mainProp in dialogVm.MainProps)
+        {
+            equipItem.MainProps.Add(mainProp);
+        }
+        foreach (var addonProp in dialogVm.AddonProps)
+        {
+            equipItem.AddonProps.Add(addonProp);
+        }
+        equipItem.UpdatePropsJsonData();
+        //
+        if (itemListData == null)
+        {
+            return;
+        }
+        try
+        {
+            long itemUid = UidTool.NextUid();
+            var jsonData = equipItem.ToNewJsonData(itemUid.ToString(), playerUid);
+            itemListData.Add(equipItem.PosKey, jsonData);
+            //判断界面上的新物品行应该放到哪里
+            if (insertIndex < BagItemList.Count)
+            {
+                BagItemList.Insert(insertIndex, equipItem);
+            }
+            else
+            {
+                BagItemList.Add(equipItem);
+            }
+            await MainViewModel.ShowMessageTipAsync(vm =>
+            {
+                vm.Title = "发放成功";
+                vm.Message = $"发放{dialogVm.Name}成功";
+                vm.TextColor = Brushes.Green;
+            });
+        }
+        catch (Exception ex)
+        {
+            await MainViewModel.ShowMessageTipAsync(vm =>
+            {
+                vm.Title = "出错了";
+                vm.Message = ex.Message;
+                vm.TextColor = Brushes.Red;
+            });
         }
     }
 

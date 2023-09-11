@@ -26,8 +26,8 @@ public class ItemDialogViewModel : ViewModelBase, INotifyDataErrorInfo
     #region Properties
     public bool Confirmed
     {
-        get=>confirmed; 
-        set=>confirmed = value;
+        get => confirmed;
+        set => confirmed = value;
     }
     public bool HasErrors => errors.Count > 0;
     public int ClassID

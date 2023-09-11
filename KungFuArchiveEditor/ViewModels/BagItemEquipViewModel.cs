@@ -127,4 +127,85 @@ public class BagItemEquipViewModel : BagItemViewModel
             }
         }
     }
+
+    /// <summary>
+    /// 初始化新的装备对象
+    /// </summary>
+    /// <param name="posArr"></param>
+    /// <param name="classID"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public override void InitItem(int[] posArr, int classID, int amount = 1)
+    {
+        mainPos = posArr[0];
+        subPos = posArr[1];
+        pos = posArr[2];
+        entityType = 5;
+        this.classID = classID;
+        this.amount = amount;
+        rarity = 0;
+        rarityObject = new JValue(rarity);
+        mainPropsObject = new JArray();
+        addonPropsObject = new JArray();
+        if (GameConfigData.Equips.TryGetValue(classID, out var equipConfig))
+        {
+            var equipType = equipConfig.EquipType;
+            int mainPropID = 0;
+            int mainPropValue = 0;
+            //不同的装备类型对应不同的主属性
+            foreach (var propPair in GameConfigData.EquipMainProps)
+            {
+                if (propPair.Value.EquipType == equipType)
+                {
+                    mainPropID = propPair.Key;
+                }
+            }
+            //默认的主属性值
+            var propValueArr = new int[]
+            {
+                2,-2,200,5,3
+            };
+            if (equipType < propValueArr.Length)
+            {
+                mainPropValue = propValueArr[equipType];
+            }
+            MainProps.Add(new EquipPropViewModel()
+            {
+                Id = mainPropID,
+                Value = mainPropValue
+            });
+        }
+    }
+    /// <summary>
+    /// 转换为新的json对象
+    /// </summary>
+    /// <param name="uid"></param>
+    /// <param name="ownerUid"></param>
+    /// <returns></returns>
+    public override JObject ToNewJsonData(string uid, string ownerUid)
+    {
+        var jsonData = new JObject
+        {
+            ["uid"] = new JValue(uid),
+            ["class_id"] = new JValue(classID),
+            ["entity_type"] = new JValue(entityType),
+        };
+        if (rarityObject != null)
+        {
+            jsonData["rarity"] = rarityObject;
+        }
+        jsonData["container_position"] = new JValue(PosKey);
+        jsonData["owner_uid"] = new JValue(ownerUid);
+        if (mainPropsObject != null)
+        {
+            jsonData["main_props"] = mainPropsObject;
+        }
+        if (addonPropsObject != null)
+        {
+            jsonData["addon_props"] = addonPropsObject;
+        }
+        jsonData["is_world_equip"] = new JValue(0);
+        jsonData["component_data"] = new JObject();
+        return jsonData;
+    }
 }

@@ -7,7 +7,7 @@
         xmlns:vm="using:KungFuArchiveEditor.ViewModels"
         x:Class="KungFuArchiveEditor.Views.ItemDialog"
         x:DataType="vm:ItemDialogViewModel"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterOwner" CanResize="False"
         Icon="/Assets/avalonia-logo.ico" ShowInTaskbar="False"
         Title="{x:Static assets:LangResources.SendItemTitle}">
     <DockPanel>
