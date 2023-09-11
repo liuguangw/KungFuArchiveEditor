@@ -1,45 +1,45 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
 
-  
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-	  <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\LangResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>LangResources.resx</DependentUpon>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Assets\LangResources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
-    </AvaloniaResource>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\*.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-	  <None Update="../LICENSE">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-  </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Update="Assets\LangResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>LangResources.resx</DependentUpon>
+        </AvaloniaResource>
+        <AvaloniaResource Update="Assets\LangResources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
+        </AvaloniaResource>
+    </ItemGroup>
+    <!--需要copy的文件-->
+    <ItemGroup>
+        <None Include="Data\*.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="../LICENSE">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>

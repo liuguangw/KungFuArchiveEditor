@@ -8,32 +8,32 @@
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="480"
              x:Class="KungFuArchiveEditor.Views.MainView"
              x:DataType="vm:MainViewModel">
-	<DockPanel>
-		<Menu DockPanel.Dock="Top" Background="Lavender">
-			<MenuItem Header="{x:Static assets:LangResources.MenuFile}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="Lavender">
+            <MenuItem Header="{x:Static assets:LangResources.MenuFile}">
+                <MenuItem Header="{x:Static assets:LangResources.MenuOpen}"
                           Command="{Binding OpenFileAction}"/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"
+                <MenuItem Header="{x:Static assets:LangResources.MenuSave}"
                           Command="{Binding SaveFileAction}"/>
-				<Separator/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"
-						  Command="{Binding ExitAction}"/>
-			</MenuItem>
-			<MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuAbout}"
-						  Command="{Binding AboutAction}"/>
-			</MenuItem>
-		</Menu>
-		<TabControl Margin="5" DockPanel.Dock="Bottom">
-			<TabItem Header="{x:Static assets:LangResources.TabRoleHeader}">
-				<views:RoleView DataContext="{Binding RoleVm}" />
-			</TabItem>
-			<TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
-				<views:BagView DataContext="{Binding BagVm}" />
-			</TabItem>
-			<TabItem Header="{x:Static assets:LangResources.TabAbilityHeader}">
-				<views:AbilityView DataContext="{Binding AbilityVm}" />
-			</TabItem>
-		</TabControl>
-	</DockPanel>
+                <Separator/>
+                <MenuItem Header="{x:Static assets:LangResources.MenuExit}"
+                          Command="{Binding ExitAction}"/>
+            </MenuItem>
+            <MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
+                <MenuItem Header="{x:Static assets:LangResources.MenuAbout}"
+                          Command="{Binding AboutAction}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Margin="5" DockPanel.Dock="Bottom">
+            <TabItem Header="{x:Static assets:LangResources.TabRoleHeader}">
+                <views:RoleView DataContext="{Binding RoleVm}" />
+            </TabItem>
+            <TabItem Header="{x:Static assets:LangResources.TabBagHeader}">
+                <views:BagView DataContext="{Binding BagVm}" />
+            </TabItem>
+            <TabItem Header="{x:Static assets:LangResources.TabAbilityHeader}">
+                <views:AbilityView DataContext="{Binding AbilityVm}" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </UserControl>
