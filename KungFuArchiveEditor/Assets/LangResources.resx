@@ -241,4 +241,10 @@
   <data name="SendItemTitle" xml:space="preserve">
     <value>distribute items</value>
   </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About the Matchless KungFu Archive Editor</value>
+  </data>
+  <data name="GitHubUrl" xml:space="preserve">
+    <value>https://github.com/liuguangw/KungFuArchiveEditor</value>
+  </data>
 </root>

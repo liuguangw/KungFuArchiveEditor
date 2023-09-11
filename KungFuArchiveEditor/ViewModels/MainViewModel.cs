@@ -43,6 +43,24 @@ public class MainViewModel : ViewModelBase
             });
         }
     }
+    /// <summary>
+    /// 关于
+    /// </summary>
+    public async void AboutAction()
+    {
+        await ShowAboutWindowAsync();
+    }
+
+    /// <summary>
+    /// 退出
+    /// </summary>
+    public void ExitAction()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopApp)
+        {
+            desktopApp.Shutdown();
+        }
+    }
     public async void OpenFileAction()
     {
         if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -202,7 +220,17 @@ public class MainViewModel : ViewModelBase
         if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var topWindow = desktop.MainWindow!;
-            await dialog.ShowDialog<MessageTipViewModel?>(topWindow);
+            await dialog.ShowDialog(topWindow);
+        }
+    }
+
+    private static async Task ShowAboutWindowAsync()
+    {
+        if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var topWindow = desktop.MainWindow!;
+            var dialog = new AboutWindow();
+            await dialog.ShowDialog(topWindow);
         }
     }
 }

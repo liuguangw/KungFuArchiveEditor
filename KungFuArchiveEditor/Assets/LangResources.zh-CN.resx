@@ -240,4 +240,10 @@
   <data name="SendItemTitle" xml:space="preserve">
     <value>发放物品</value>
   </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>关于 绝世好武功存档修改器</value>
+  </data>
+  <data name="GitHubUrl" xml:space="preserve">
+    <value>https://github.com/liuguangw/KungFuArchiveEditor</value>
+  </data>
 </root>

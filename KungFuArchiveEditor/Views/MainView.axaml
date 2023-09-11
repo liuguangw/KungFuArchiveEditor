@@ -16,10 +16,12 @@
 				<MenuItem Header="{x:Static assets:LangResources.MenuSave}"
                           Command="{Binding SaveFileAction}"/>
 				<Separator/>
-				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuExit}"
+						  Command="{Binding ExitAction}"/>
 			</MenuItem>
 			<MenuItem Header="{x:Static assets:LangResources.MenuHelp}">
-				<MenuItem Header="{x:Static assets:LangResources.MenuAbout}"/>
+				<MenuItem Header="{x:Static assets:LangResources.MenuAbout}"
+						  Command="{Binding AboutAction}"/>
 			</MenuItem>
 		</Menu>
 		<TabControl Margin="5" DockPanel.Dock="Bottom">

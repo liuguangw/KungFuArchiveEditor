@@ -70,6 +70,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 About the Matchless KungFu Archive Editor 的本地化字符串。
+        /// </summary>
+        public static string AboutTitle {
+            get {
+                return ResourceManager.GetString("AboutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 action 的本地化字符串。
         /// </summary>
         public static string ActionText {
@@ -192,6 +201,15 @@ namespace KungFuArchiveEditor.Assets {
         public static string Exp {
             get {
                 return ResourceManager.GetString("Exp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 https://github.com/liuguangw/KungFuArchiveEditor 的本地化字符串。
+        /// </summary>
+        public static string GitHubUrl {
+            get {
+                return ResourceManager.GetString("GitHubUrl", resourceCulture);
             }
         }
         

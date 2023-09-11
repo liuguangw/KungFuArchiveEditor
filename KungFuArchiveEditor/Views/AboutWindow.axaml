@@ -1,0 +1,79 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Width="512" Height="384"
+        x:Class="KungFuArchiveEditor.Views.AboutWindow"
+        xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
+        WindowStartupLocation="CenterOwner" CanResize="False"
+        Icon="/Assets/avalonia-logo.ico" ShowInTaskbar="False"
+        Title="{x:Static assets:LangResources.AboutTitle}">
+    <StackPanel Margin="15">
+        <StackPanel.Styles>
+            <Style Selector="TextBlock.h1">
+                <Setter Property="FontSize" Value="30"/>
+                <Setter Property="Foreground" Value="#178600"/>
+            </Style>
+            <Style Selector="TextBlock.h2">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="Foreground" Value="#178600"/>
+                <Setter Property="Margin" Value="0,12,0,0"/>
+            </Style>
+            <Style Selector="StackPanel.content">
+                <Setter Property="Margin" Value="0,8,0,0"/>
+                <Style Selector="^>TextBlock">
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="Foreground" Value="#1c1e21"/>
+                    <Setter Property="Margin" Value="0,5,0,0"/>
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Style Selector="^>Run.tag">
+                        <Setter Property="Foreground" Value="#2196f3"/>
+                    </Style>
+                </Style>
+                <Style Selector="^>TextBlock.important">
+                    <Setter Property="Foreground" Value="Red"/>
+                </Style>
+                <Style Selector="^>WrapPanel.link">
+                    <Setter Property="Margin" Value="0,5,0,0"/>
+
+                    <Style Selector="^>TextBlock">
+                        <Setter Property="Margin" Value="0,0,5,0"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Foreground" Value="#1c1e21"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style Selector="^>Button">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#df23a4" />
+                        </Style>
+                    </Style>
+
+                </Style>
+            </Style>
+        </StackPanel.Styles>
+        <TextBlock Classes="h1">绝世好武功存档修改器</TextBlock>
+        <StackPanel  Classes="content">
+            <TextBlock>本程序由流光开发, 使用 Avalonia 作为UI库.</TextBlock>
+            <TextBlock>本程序按 GPL 协议开源, 源代码可以在以下地址获取,禁止倒卖.</TextBlock>
+            <WrapPanel Classes="link">
+                <TextBlock>GitHub: </TextBlock>
+                <Button Click="OpenUrlHandler" Content="{x:Static assets:LangResources.GitHubUrl}" />
+            </WrapPanel>
+        </StackPanel>
+        <TextBlock Classes="h2">使用说明</TextBlock>
+        <StackPanel Classes="content">
+            <TextBlock>
+                游戏现在使用的多存档模式,<Run Classes="tag">Saves</Run>文件夹是默认存档文件夹,后面带有短数字的是手动存档,长数字的是自动存档.
+            </TextBlock>
+            <TextBlock>使用此工具打开存档文件夹中的<Run Classes="tag">share_world_data.json</Run>,然后就可以根据需要进行修改了.</TextBlock>
+            <TextBlock>本工具附带的<Run Classes="tag">Data</Run>文件夹中可以查询相关id, item.txt(道具), equipment.txt(装备), equip_addon_prop.txt(装备附加属性) 第一列的数字就是id</TextBlock>
+            <TextBlock Classes="important">只有点击菜单栏的 [文件] - [保存], 修改才会写入存档之中.</TextBlock>
+        </StackPanel>
+    </StackPanel>
+</Window>
