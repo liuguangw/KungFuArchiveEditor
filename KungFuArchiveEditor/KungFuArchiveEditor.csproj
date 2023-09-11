@@ -24,9 +24,9 @@
 
     <ItemGroup>
         <AvaloniaResource Update="Assets\LangResources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>LangResources.resx</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>LangResources.resx</DependentUpon>
         </AvaloniaResource>
         <AvaloniaResource Update="Assets\LangResources.resx">
             <Generator>PublicResXFileCodeGenerator</Generator>

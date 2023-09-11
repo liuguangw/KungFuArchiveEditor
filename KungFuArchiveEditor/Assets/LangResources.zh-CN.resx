@@ -246,4 +246,19 @@
   <data name="GitHubUrl" xml:space="preserve">
     <value>https://github.com/liuguangw/KungFuArchiveEditor</value>
   </data>
+  <data name="ZhangfaAttack" xml:space="preserve">
+    <value>掌法攻击</value>
+  </data>
+  <data name="QuanfaAttack" xml:space="preserve">
+    <value>拳法攻击</value>
+  </data>
+  <data name="TuifaAttack" xml:space="preserve">
+    <value>腿法攻击</value>
+  </data>
+  <data name="AnqiAttack" xml:space="preserve">
+    <value>暗器攻击</value>
+  </data>
+  <data name="BingqiAttack" xml:space="preserve">
+    <value>兵器攻击</value>
+  </data>
 </root>

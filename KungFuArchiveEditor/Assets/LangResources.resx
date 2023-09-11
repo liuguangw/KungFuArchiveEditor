@@ -247,4 +247,19 @@
   <data name="GitHubUrl" xml:space="preserve">
     <value>https://github.com/liuguangw/KungFuArchiveEditor</value>
   </data>
+  <data name="ZhangfaAttack" xml:space="preserve">
+    <value>zhangfa attack</value>
+  </data>
+  <data name="QuanfaAttack" xml:space="preserve">
+    <value>quanfa attack</value>
+  </data>
+  <data name="TuifaAttack" xml:space="preserve">
+    <value>tuifa attack</value>
+  </data>
+  <data name="BingqiAttack" xml:space="preserve">
+    <value>bingqi attack</value>
+  </data>
+  <data name="AnqiAttack" xml:space="preserve">
+    <value>anqi attack</value>
+  </data>
 </root>

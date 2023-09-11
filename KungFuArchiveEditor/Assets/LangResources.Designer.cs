@@ -133,6 +133,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 anqi attack 的本地化字符串。
+        /// </summary>
+        public static string AnqiAttack {
+            get {
+                return ResourceManager.GetString("AnqiAttack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 archive file 的本地化字符串。
         /// </summary>
         public static string ArchiveFile {
@@ -165,6 +174,15 @@ namespace KungFuArchiveEditor.Assets {
         public static string AttrValue {
             get {
                 return ResourceManager.GetString("AttrValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 bingqi attack 的本地化字符串。
+        /// </summary>
+        public static string BingqiAttack {
+            get {
+                return ResourceManager.GetString("BingqiAttack", resourceCulture);
             }
         }
         
@@ -385,6 +403,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 quanfa attack 的本地化字符串。
+        /// </summary>
+        public static string QuanfaAttack {
+            get {
+                return ResourceManager.GetString("QuanfaAttack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 rarity 的本地化字符串。
         /// </summary>
         public static string Rarity {
@@ -439,11 +466,29 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 tuifa attack 的本地化字符串。
+        /// </summary>
+        public static string TuifaAttack {
+            get {
+                return ResourceManager.GetString("TuifaAttack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 user id 的本地化字符串。
         /// </summary>
         public static string UserID {
             get {
                 return ResourceManager.GetString("UserID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 zhangfa attack 的本地化字符串。
+        /// </summary>
+        public static string ZhangfaAttack {
+            get {
+                return ResourceManager.GetString("ZhangfaAttack", resourceCulture);
             }
         }
     }
