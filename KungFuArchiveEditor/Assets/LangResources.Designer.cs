@@ -115,15 +115,6 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
-        ///   查找类似 and property ID cannot be repeated 的本地化字符串。
-        /// </summary>
-        public static string AddonPropTip1 {
-            get {
-                return ResourceManager.GetString("AddonPropTip1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 amount 的本地化字符串。
         /// </summary>
         public static string Amount {

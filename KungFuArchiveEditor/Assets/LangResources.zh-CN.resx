@@ -213,9 +213,6 @@
   <data name="AddonPropTip" xml:space="preserve">
     <value>附加属性ID请参考文件: equip_addon_prop.txt</value>
   </data>
-  <data name="AddonPropTip1" xml:space="preserve">
-    <value>属性ID不能重复</value>
-  </data>
   <data name="AddAddonProp" xml:space="preserve">
     <value>添加附加属性</value>
   </data>

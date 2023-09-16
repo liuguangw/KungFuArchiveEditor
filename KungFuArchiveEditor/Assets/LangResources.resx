@@ -214,9 +214,6 @@
   <data name="AddonPropTip" xml:space="preserve">
     <value>Please refer to the file for additional property ID: equip_addon_prop.txt</value>
   </data>
-  <data name="AddonPropTip1" xml:space="preserve">
-    <value>and property ID cannot be repeated</value>
-  </data>
   <data name="AddAddonProp" xml:space="preserve">
     <value>add addon property</value>
   </data>
