@@ -253,6 +253,11 @@ public class BagViewModel : ViewModelBase
                 }
             }
         }
+        //没有装备时,默认放到最后面
+        if (pos == 0 && BagItemList.Count > 0)
+        {
+            insertIndex = BagItemList.Count;
+        }
         var posArr = new int[] { mainPos, subPos, pos };
         equipItem.InitItem(posArr, classID);
         //

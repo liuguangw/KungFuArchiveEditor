@@ -192,10 +192,13 @@ public static class ArchiveTool
         int procLimit = 0x020000;
         var procCount = Math.Min(packData.Length, procLimit);
         using var destStream = new MemoryStream();
-        using var compressor = new GZipStream(destStream, CompressionMode.Compress);
-        await compressor.WriteAsync(packData, 0, procCount);
-        await compressor.FlushAsync();
+        using (var compressor = new GZipStream(destStream, CompressionMode.Compress))
+        {
+            await compressor.WriteAsync(packData, 0, procCount);
+            await compressor.FlushAsync();
+        }
         var compressedData = destStream.ToArray();
+        compressedData[9] = 0x0B;
         //
         uint magic = 0x9E2A83C1;
         int emptyValue = 0;
