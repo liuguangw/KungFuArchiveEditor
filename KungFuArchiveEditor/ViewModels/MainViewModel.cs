@@ -4,11 +4,9 @@ using Avalonia.Platform.Storage;
 using KungFuArchiveEditor.Assets;
 using KungFuArchiveEditor.Tools;
 using KungFuArchiveEditor.Views;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace KungFuArchiveEditor.ViewModels;
@@ -31,7 +29,7 @@ public class MainViewModel : ViewModelBase
         }
         try
         {
-            await SaveFileAsync(currentJsonFile, worldJsonData);
+            await ArchiveTool.SaveArchiveAsync(currentJsonFile, worldJsonData);
         }
         catch (Exception ex)
         {
@@ -87,8 +85,8 @@ public class MainViewModel : ViewModelBase
     {
         var fileTypeFilter = new FilePickerFileType(LangResources.ArchiveFile)
         {
-            Patterns = new[] { "share_world_data.json" },
-            MimeTypes = new[] { "application/json" }
+            Patterns = new[] { "share_world_data.json", "share_world_data.data" },
+            MimeTypes = new[] { "application/json", "application/octet-stream" }
         };
         var openOptions = new FilePickerOpenOptions
         {
@@ -102,8 +100,8 @@ public class MainViewModel : ViewModelBase
         {
             //记录最后打开的文件夹
             lastOpenFolder = await files[0].GetParentAsync();
-            //加载json文件内容
-            worldJsonData = await LoadFileAsync(files[0]);
+            //加载存档文件内容
+            worldJsonData = await ArchiveTool.LoadArchiveAsync(files[0]);
             if (worldJsonData != null)
             {
 
@@ -146,24 +144,6 @@ public class MainViewModel : ViewModelBase
             var saveDir = Path.Combine(pathDirs);
             openOptions.SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(saveDir);
         }
-    }
-
-    private static async Task<JObject> LoadFileAsync(IStorageFile file)
-    {
-        await using var stream = await file.OpenReadAsync();
-        var encoding = Encoding.GetEncoding("utf-16");
-        using var streamReader = new StreamReader(stream, encoding);
-        var fileContent = await streamReader.ReadToEndAsync();
-        return JObject.Parse(fileContent);
-    }
-
-    private static async Task SaveFileAsync(IStorageFile file, JObject jsonData)
-    {
-        var jsonContent = jsonData.ToString(Formatting.None);
-        await using var stream = await file.OpenWriteAsync();
-        var encoding = Encoding.GetEncoding("utf-16");
-        using var streamWriter = new StreamWriter(stream, encoding);
-        await streamWriter.WriteAsync(jsonContent);
     }
 
     private void LoadModelData(JObject jsonData)

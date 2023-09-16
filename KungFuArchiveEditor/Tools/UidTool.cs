@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace KungFuArchiveEditor.Tools;
@@ -51,11 +50,11 @@ public static class UidTool
             return;
         }
         var di = new DirectoryInfo(folderPath);
-        foreach (var jsonFile in di.GetFiles("world_data.json", SearchOption.AllDirectories))
+        foreach (var file in di.GetFiles("world_data.*", SearchOption.AllDirectories))
         {
             try
             {
-                var worldMaxUid = await GetWorldMaxUidAsync(jsonFile);
+                var worldMaxUid = await GetWorldMaxUidAsync(file);
                 if (worldMaxUid > gameMaxUid)
                 {
                     gameMaxUid = worldMaxUid;
@@ -104,14 +103,10 @@ public static class UidTool
         return maxUid;
     }
 
-    private static async Task<long> GetWorldMaxUidAsync(FileInfo jsonFile)
+    private static async Task<long> GetWorldMaxUidAsync(FileInfo file)
     {
         long maxUid = 0;
-        await using var stream = jsonFile.OpenRead();
-        var encoding = Encoding.GetEncoding("utf-16");
-        using var streamReader = new StreamReader(stream, encoding);
-        var fileContent = await streamReader.ReadToEndAsync();
-        var jsonData = JObject.Parse(fileContent);
+        var jsonData = await ArchiveTool.LoadArchiveAsync(file);
         if (jsonData == null)
         {
             return maxUid;
