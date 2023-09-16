@@ -16,3 +16,9 @@ dotnet build KungFuArchiveEditor.Desktop -c Release
 ```
 
 编译后的程序在 *KungFuArchiveEditor.Desktop/bin* 目录中。
+
+### 下载地址
+
+这个项目代码会时不时的修改，所以我GitHub上面就不放release了。
+暂时在国内网盘放了一个我编译的软件：
+[https://liuguang.lanzouw.com/iX6tI18pg4wh](https://liuguang.lanzouw.com/iX6tI18pg4wh)
