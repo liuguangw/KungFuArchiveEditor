@@ -71,7 +71,7 @@
             <TextBlock>
                 游戏现在使用的多存档模式,<Run Classes="tag">Saves</Run>文件夹是默认存档文件夹,后面带有短数字的是手动存档,长数字的是自动存档.
             </TextBlock>
-            <TextBlock>使用此工具打开存档文件夹中的<Run Classes="tag">share_world_data.json</Run>,然后就可以根据需要进行修改了.</TextBlock>
+            <TextBlock>使用此工具打开存档文件夹中的<Run Classes="tag">share_world_data.data</Run>或<Run Classes="tag">share_world_data.json</Run>,然后就可以根据需要进行修改了.</TextBlock>
             <TextBlock>本工具附带的<Run Classes="tag">Data</Run>文件夹中可以查询相关id, item.txt(道具), equipment.txt(装备), equip_addon_prop.txt(装备附加属性) 第一列的数字就是id</TextBlock>
             <TextBlock Classes="important">只有点击菜单栏的 [文件] - [保存], 修改才会写入存档之中.</TextBlock>
         </StackPanel>
