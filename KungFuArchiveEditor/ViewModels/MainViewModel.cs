@@ -20,6 +20,7 @@ public class MainViewModel : ViewModelBase
     public RoleViewModel RoleVm { get; } = new();
     public BagViewModel BagVm { get; } = new();
     public AbilityViewModel AbilityVm { get; } = new();
+    public JingmaiViewModel JingmaiVm { get; } = new();
 
     public async void SaveFileAction()
     {
@@ -186,6 +187,16 @@ public class MainViewModel : ViewModelBase
         if (abilityEntityMap is JObject abilityMap)
         {
             AbilityVm.LoadItemList(abilityMap);
+        }
+        //经脉
+        var jingmaiData = playerData.SelectToken("component_data.jingmai");
+        if (jingmaiData == null)
+        {
+            return;
+        }
+        if (jingmaiData is JObject jingmaiDataObj)
+        {
+            JingmaiVm.LoadJingmaiData(jingmaiDataObj);
         }
     }
 

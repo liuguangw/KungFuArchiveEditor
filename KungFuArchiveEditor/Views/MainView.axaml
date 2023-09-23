@@ -34,6 +34,9 @@
             <TabItem Header="{x:Static assets:LangResources.TabAbilityHeader}">
                 <views:AbilityView DataContext="{Binding AbilityVm}" />
             </TabItem>
+			<TabItem Header="jingmai">
+				<views:JingmaiView DataContext="{Binding JingmaiVm}"/>
+			</TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>
