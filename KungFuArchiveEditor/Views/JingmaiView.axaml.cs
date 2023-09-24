@@ -133,8 +133,8 @@ public partial class JingmaiView : UserControl
     private void DrawMap(int mapSize, Dictionary<(int, int, int), int> mapData)
     {
         //Debug.WriteLine($"DrawMap mapSize={mapSize}");
-        MainCanvas.Width = (mapSize * 2 + 1) * Math.Sqrt(3) * nodeSize;
-        MainCanvas.Height = (3 * mapSize + 2) * nodeSize;
+        MainCanvas.Height = (mapSize * 2 + 1) * Math.Sqrt(3) * nodeSize;
+        MainCanvas.Width = (3 * mapSize + 2) * nodeSize;
         //清理
         MainCanvas.Children.Clear();
         ImageNodes.Clear();
@@ -144,7 +144,7 @@ public partial class JingmaiView : UserControl
         {
             for (int r = rBegin; r <= mapSize; r++)
             {
-                DrawPolygon(MainCanvas, q, r, mapData);
+                DrawPolygon(MainCanvas, mapSize, q, r, mapData);
                 //Debug.Write($"q={q},r={r} ");
             }
             //Debug.WriteLine("\n=====");
@@ -156,7 +156,7 @@ public partial class JingmaiView : UserControl
         {
             for (int r = rBegin; r <= rEnd; r++)
             {
-                DrawPolygon(MainCanvas, q, r, mapData);
+                DrawPolygon(MainCanvas, mapSize, q, r, mapData);
                 //Debug.Write($"q={q},r={r} ");
             }
             //Debug.WriteLine("\n=====");
@@ -187,19 +187,18 @@ public partial class JingmaiView : UserControl
     /// 绘制六边形
     /// </summary>
     /// <param name="canvas"></param>
+    /// <param name="mapSize"></param>
     /// <param name="q"></param>
     /// <param name="r"></param>
     /// <param name="mapData">参考数据,根据此数据判断当前坐标是否是穴位</param>
-    private void DrawPolygon(Canvas canvas, int q, int r, Dictionary<(int, int, int), int> mapData)
+    private void DrawPolygon(Canvas canvas, int mapSize, int q, int r, Dictionary<(int, int, int), int> mapData)
     {
         var polygon = BuildPolygon();
-        //中间六边形的左上角的坐标
-        double x = (canvas.Width - Math.Sqrt(3) * nodeSize) / 2;
-        double y = canvas.Height / 2 - nodeSize;
-        //
-        x += q * Math.Sqrt(3) * nodeSize;
-        x += r * Math.Sqrt(3) * nodeSize / 2;
-        y += r * nodeSize * 3 / 2;
+        //六边形的左上角的坐标
+        double x = (r + mapSize) * 3 * nodeSize / 2;
+        //double y = (mapSize-q)* Math.Sqrt(3) * nodeSize;
+        //y-=r* Math.Sqrt(3) * nodeSize / 2;
+        double y = (2 * (mapSize - q) - r) * Math.Sqrt(3) * nodeSize / 2;
         Canvas.SetLeft(polygon, x);
         Canvas.SetTop(polygon, y);
         canvas.Children.Add(polygon);
@@ -210,7 +209,7 @@ public partial class JingmaiView : UserControl
         //
         /*var label = BuildLabel($"{q}|{r}|{s}");
         Canvas.SetLeft(label, x);
-        Canvas.SetTop(label, y + nodeSize - (label.FontSize / 2));
+        Canvas.SetTop(label, y + (Math.Sqrt(3) * nodeSize - label.FontSize) / 2);
         canvas.Children.Add(label);
         AttachEventAction(canvas, polygon, label, x, y, posKey);*/
         //丹田
@@ -279,8 +278,8 @@ public partial class JingmaiView : UserControl
             Height = iconWidth,
             Source = ImageSourceList[nodeType - 1],
         };
-        Canvas.SetLeft(image, (Math.Sqrt(3) * nodeSize - iconWidth) / 2 + x);
-        Canvas.SetTop(image, nodeSize - (iconWidth / 2) + y);
+        Canvas.SetLeft(image, nodeSize - (iconWidth / 2) + x);
+        Canvas.SetTop(image, (Math.Sqrt(3) * nodeSize - iconWidth) / 2 + y);
         canvas.Children.Add(image);
         return image;
     }
@@ -325,17 +324,18 @@ public partial class JingmaiView : UserControl
     {
         var item = new Polygon()
         {
-            Width = Math.Sqrt(3) * nodeSize,
+            Width = 2 * nodeSize,
+            Height = Math.Sqrt(3) * nodeSize,
             Stroke = Brushes.Black,
             StrokeThickness = 1,
             Points = new Points()
             {
-                new(0,nodeSize/2),
-                new(Math.Sqrt(3) * nodeSize/2,0),
-                new(Math.Sqrt(3) * nodeSize,nodeSize/2),
-                new(Math.Sqrt(3) * nodeSize,nodeSize*3/2),
-                new(Math.Sqrt(3) * nodeSize/2,nodeSize*2),
-                new(0,nodeSize*3/2),
+                new(0,Math.Sqrt(3) * nodeSize/2),
+                new(nodeSize/2,0),
+                new(nodeSize*3/2,0),
+                new(2*nodeSize,Math.Sqrt(3) * nodeSize/2),
+                new(nodeSize*3/2,Math.Sqrt(3) * nodeSize),
+                new(nodeSize/2,Math.Sqrt(3) * nodeSize),
             },
             Fill = Brushes.AliceBlue,
         };
