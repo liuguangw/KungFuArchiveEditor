@@ -21,4 +21,5 @@ dotnet build KungFuArchiveEditor.Desktop -c Release
 
 这个项目代码会时不时的修改，所以我GitHub上面就不放release了。
 暂时在国内网盘放了一个我编译的软件：
-[https://liuguang.lanzouw.com/iX6tI18pg4wh](https://liuguang.lanzouw.com/iX6tI18pg4wh)
+[https://liuguang.lanzouw.com/b0etrmc5a](https://liuguang.lanzouw.com/b0etrmc5a)
+密码:**hcxx**
