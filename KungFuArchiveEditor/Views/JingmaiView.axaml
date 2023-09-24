@@ -2,17 +2,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:assets="clr-namespace:KungFuArchiveEditor.Assets"
              mc:Ignorable="d" d:DesignWidth="608" d:DesignHeight="344"
-			 Loaded="JingmaiView_Loaded"
+             Loaded="JingmaiView_Loaded"
              x:Class="KungFuArchiveEditor.Views.JingmaiView">
-	<DockPanel>
-		<WrapPanel DockPanel.Dock="Top">
-			<TextBlock Text="MapSize" VerticalAlignment="Center" Margin="0,0,5,0"/>
-			<TextBox Text="{Binding MapSize}" />
-		</WrapPanel>
-		<ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Visible" 
-					  VerticalScrollBarVisibility="Auto">
-			<Canvas Name="MainCanvas"/>
-		</ScrollViewer>
-	</DockPanel>
+    <DockPanel>
+        <WrapPanel DockPanel.Dock="Top">
+            <WrapPanel.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="0,0,5,0"/>
+                </Style>
+                <Style Selector="TextBlock.number">
+                    <Setter Property="Foreground" Value="#e3116c"/>
+                </Style>
+                <Style Selector="ComboBox">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="0,0,5,0"/>
+                    <Setter Property="MinWidth" Value="100"/>
+                </Style>
+                <Style Selector="Button">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Width" Value="32"/>
+                    <Setter Property="Height" Value="32"/>
+                </Style>
+                <Style Selector="Button.active">
+                    <Setter Property="Background" Value="#00BCD4"/>
+                    <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="#3eabb9"/>
+                    </Style>
+                </Style>
+            </WrapPanel.Styles>
+            <TextBlock Text="{x:Static assets:LangResources.PanelSize}"/>
+            <ComboBox ItemsSource="{Binding MapSizeSelection}" SelectedValue="{Binding SelectedMapSize}"
+                      DisplayMemberBinding="{Binding Name}" />
+            <TextBlock Text="{x:Static assets:LangResources.Tool}"/>
+            <Button Classes="active" Click="ToolC2Click">
+                <Image Source="avares://KungFuArchiveEditor/Assets/icon/c2.png" />
+            </Button>
+            <Button Click="ToolC3Click">
+                <Image Source="avares://KungFuArchiveEditor/Assets/icon/c3.png" />
+            </Button>
+            <Button Click="ToolC4Click">
+                <Image Source="avares://KungFuArchiveEditor/Assets/icon/c4.png" />
+            </Button>
+            <Button Click="ToolClearClick" ToolTip.Tip="{x:Static assets:LangResources.Clear}">
+                <Image Source="avares://KungFuArchiveEditor/Assets/icon/clear.png" />
+            </Button>
+            <TextBlock Margin="5,0" Text="{x:Static assets:LangResources.SlotCount}"/>
+            <TextBlock Classes="number" Text="{Binding SlotCount}"/>
+            <TextBlock Text="{x:Static assets:LangResources.MaxLife}"/>
+            <TextBlock Classes="number" Text="{Binding MaxLife}"/>
+        </WrapPanel>
+        <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Auto">
+            <Canvas Name="MainCanvas"/>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

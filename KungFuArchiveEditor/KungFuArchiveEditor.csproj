@@ -42,6 +42,7 @@
         <None Remove="Assets\icon\c2.png" />
         <None Remove="Assets\icon\c3.png" />
         <None Remove="Assets\icon\c4.png" />
+        <None Remove="Assets\icon\clear.png" />
         <None Include="../LICENSE">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

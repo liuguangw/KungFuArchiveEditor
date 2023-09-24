@@ -10,7 +10,6 @@ using KungFuArchiveEditor.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace KungFuArchiveEditor.Views;
 public partial class JingmaiView : UserControl
@@ -18,7 +17,7 @@ public partial class JingmaiView : UserControl
     /// <summary>
     /// 六边形的边长
     /// </summary>
-    const double nodeSize = 45;
+    const double nodeSize = 40;
     const double iconWidth = 32;
     private JingmaiViewModel? JingmaiVm;
     /// <summary>
@@ -29,6 +28,10 @@ public partial class JingmaiView : UserControl
     /// 绘制的穴位图标记录 posKey => (nodeType, image)
     /// </summary>
     private readonly Dictionary<(int, int, int), (int, Image)> ImageNodes = new();
+    /// <summary>
+    /// 当前选择的工具类型
+    /// </summary>
+    private int currentToolType = 2;
     public JingmaiView()
     {
         InitializeComponent();
@@ -39,6 +42,55 @@ public partial class JingmaiView : UserControl
             new Bitmap(AssetLoader.Open(new Uri($"avares://KungFuArchiveEditor/Assets/icon/c3.png"))),
             new Bitmap(AssetLoader.Open(new Uri($"avares://KungFuArchiveEditor/Assets/icon/c4.png"))),
         };
+    }
+
+    private void SelectTool(Button btn, int nodeType)
+    {
+        var parentNode = btn.Parent;
+        if (parentNode is Panel panel)
+        {
+            foreach (var element in panel.Children)
+            {
+                if (element is Button btnElement)
+                {
+                    btnElement.Classes.Clear();
+                }
+            }
+        }
+        btn.Classes.Add("active");
+        currentToolType = nodeType;
+    }
+
+    private void ToolC2Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            SelectTool(btn, 2);
+        }
+    }
+
+    private void ToolC3Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            SelectTool(btn, 3);
+        }
+    }
+
+    private void ToolC4Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            SelectTool(btn, 4);
+        }
+    }
+
+    private void ToolClearClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+        {
+            SelectTool(btn, 0);
+        }
     }
 
     private void JingmaiView_Loaded(object? sender, RoutedEventArgs e)
@@ -73,19 +125,20 @@ public partial class JingmaiView : UserControl
         {
             if (JingmaiVm.JingmaiMap.Count > 0)
             {
-                DrawMap(JingmaiVm.MapSize, JingmaiVm.JingmaiMap);
+                DrawMap(JingmaiVm.SelectedMapSize.Value, JingmaiVm.JingmaiMap);
             }
         }
     }
 
     private void DrawMap(int mapSize, Dictionary<(int, int, int), int> mapData)
     {
-        Debug.WriteLine($"DrawMap mapSize={mapSize}");
+        //Debug.WriteLine($"DrawMap mapSize={mapSize}");
         MainCanvas.Width = (mapSize * 2 + 1) * Math.Sqrt(3) * nodeSize;
         MainCanvas.Height = (3 * mapSize + 2) * nodeSize;
         //清理
         MainCanvas.Children.Clear();
         ImageNodes.Clear();
+        JingmaiVm!.SlotCount = 0;
         int rBegin = 0;
         for (int q = -mapSize; q <= 0; q++)
         {
@@ -111,6 +164,11 @@ public partial class JingmaiView : UserControl
         }
     }
 
+    /// <summary>
+    /// 用于调试时显示格子坐标
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     private TextBlock BuildLabel(string text)
     {
         var label = new TextBlock();
@@ -134,7 +192,7 @@ public partial class JingmaiView : UserControl
     /// <param name="mapData">参考数据,根据此数据判断当前坐标是否是穴位</param>
     private void DrawPolygon(Canvas canvas, int q, int r, Dictionary<(int, int, int), int> mapData)
     {
-        var item = BuildPolygon();
+        var polygon = BuildPolygon();
         //中间六边形的左上角的坐标
         double x = (canvas.Width - Math.Sqrt(3) * nodeSize) / 2;
         double y = canvas.Height / 2 - nodeSize;
@@ -142,38 +200,25 @@ public partial class JingmaiView : UserControl
         x += q * Math.Sqrt(3) * nodeSize;
         x += r * Math.Sqrt(3) * nodeSize / 2;
         y += r * nodeSize * 3 / 2;
-        Canvas.SetLeft(item, x);
-        Canvas.SetTop(item, y);
-        canvas.Children.Add(item);
+        Canvas.SetLeft(polygon, x);
+        Canvas.SetTop(polygon, y);
+        canvas.Children.Add(polygon);
         //
         int s = -q - r;
-        var originBg = item.Fill;
-        var enteredAction = () =>
-        {
-            item.Fill = Brushes.GreenYellow;
-        };
-        var exitedAction = () =>
-        {
-            item.Fill = originBg;
-        };
-        var tappedAction = () =>
-        {
-            var posKey = (q, r, s);
-            OnPosTap(canvas, x, y, posKey);
-        };
-        AttachEventAction(item, enteredAction, exitedAction, tappedAction);
+        var posKey = (q, r, s);
+        AttachEventAction(canvas, polygon, x, y, posKey);
         //
-        var label = BuildLabel($"{q}|{r}|{s}");
+        /*var label = BuildLabel($"{q}|{r}|{s}");
         Canvas.SetLeft(label, x);
         Canvas.SetTop(label, y + nodeSize - (label.FontSize / 2));
         canvas.Children.Add(label);
-        AttachEventAction(label, enteredAction, exitedAction, tappedAction);
+        AttachEventAction(canvas, polygon, label, x, y, posKey);*/
         //丹田
         if (q == 0 && r == 0)
         {
             var image = DrawIconImage(canvas, x, y, 1);
             ImageNodes.Add((q, r, s), (1, image));
-            AttachEventAction(image, enteredAction, exitedAction, tappedAction);
+            AttachEventAction(canvas, polygon, image, x, y, posKey);
         }
         else if (mapData.TryGetValue((q, r, s), out var nodeType))
         {
@@ -181,7 +226,8 @@ public partial class JingmaiView : UserControl
             {
                 var image = DrawIconImage(canvas, x, y, nodeType);
                 ImageNodes.Add((q, r, s), (nodeType, image));
-                AttachEventAction(image, enteredAction, exitedAction, tappedAction);
+                AttachEventAction(canvas, polygon, image, x, y, posKey);
+                JingmaiVm!.SlotCount += 1;
             }
         }
     }
@@ -190,13 +236,13 @@ public partial class JingmaiView : UserControl
     /// 六边形被点击的处理
     /// </summary>
     /// <param name="canvas"></param>
+    /// <param name="polygon"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <param name="posKey"></param>
-    private void OnPosTap(Canvas canvas, double x, double y, (int, int, int) posKey)
+    private void OnPosTap(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey)
     {
-        //debug
-        Debug.WriteLine($"{posKey.Item1}|{posKey.Item2}|{posKey.Item3}");
+        //Debug.WriteLine($"{posKey.Item1}|{posKey.Item2}|{posKey.Item3}");
         if (JingmaiVm == null)
         {
             return;
@@ -205,9 +251,15 @@ public partial class JingmaiView : UserControl
         {
             return;
         }
-        var debugType = 2;
-        ReplaceIconImage(canvas, x, y, debugType, posKey);
-        JingmaiVm.JingmaiMap[posKey] = debugType;
+        ReplaceIconImage(canvas, polygon, x, y, posKey, currentToolType);
+        if (currentToolType != 0)
+        {
+            JingmaiVm.JingmaiMap[posKey] = currentToolType;
+        }
+        else
+        {
+            JingmaiVm.JingmaiMap.Remove(posKey);
+        }
         JingmaiVm.RebuildJsonData();
     }
 
@@ -233,15 +285,17 @@ public partial class JingmaiView : UserControl
         return image;
     }
 
+
     /// <summary>
     /// 替换图标
     /// </summary>
     /// <param name="canvas"></param>
+    /// <param name="polygon"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    /// <param name="nodeType"></param>
     /// <param name="posKey"></param>
-    private void ReplaceIconImage(Canvas canvas, double x, double y, int nodeType, (int, int, int) posKey)
+    /// <param name="nodeType"></param>
+    private void ReplaceIconImage(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey, int nodeType)
     {
         //图标已经存在
         if (ImageNodes.TryGetValue(posKey, out var posItem))
@@ -255,10 +309,16 @@ public partial class JingmaiView : UserControl
             //移除原来的图标
             canvas.Children.Remove(tImage);
             ImageNodes.Remove(posKey);
+            JingmaiVm!.SlotCount -= 1;
         }
         //画上新图标
-        var image = DrawIconImage(canvas, x, y, nodeType);
-        ImageNodes.Add(posKey, (nodeType, image));
+        if (nodeType > 0)
+        {
+            var image = DrawIconImage(canvas, x, y, nodeType);
+            ImageNodes.Add(posKey, (nodeType, image));
+            AttachEventAction(canvas, polygon, image, x, y, posKey);
+            JingmaiVm!.SlotCount += 1;
+        }
     }
 
     private static Polygon BuildPolygon()
@@ -281,26 +341,47 @@ public partial class JingmaiView : UserControl
         };
         return item;
     }
+
+    private void AttachEventAction(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey)
+    {
+        AttachEventAction(canvas, polygon, polygon, x, y, posKey);
+    }
+
+
     /// <summary>
     /// 六边形和上面的element的事件绑定
     /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="polygon">六边形</param>
     /// <param name="element"></param>
-    /// <param name="enteredAction"></param>
-    /// <param name="exitedAction"></param>
-    /// <param name="tappedAction"></param>
-    private static void AttachEventAction(InputElement element, Action enteredAction, Action exitedAction, Action tappedAction)
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="posKey"></param>
+    private void AttachEventAction(Canvas canvas, Polygon polygon, InputElement element, double x, double y, (int, int, int) posKey)
     {
+        void enteredAction()
+        {
+            polygon.Fill = Brushes.GreenYellow;
+        }
+        void exitedAction()
+        {
+            polygon.Fill = Brushes.AliceBlue;
+        }
+        void tappedAction()
+        {
+            OnPosTap(canvas, polygon, x, y, posKey);
+        }
         element.PointerEntered += (o, e) =>
         {
-            enteredAction.Invoke();
+            enteredAction();
         };
         element.PointerExited += (o, e) =>
         {
-            exitedAction.Invoke();
+            exitedAction();
         };
         element.Tapped += (o, e) =>
         {
-            tappedAction.Invoke();
+            tappedAction();
         };
     }
 }

@@ -258,4 +258,22 @@
   <data name="BingqiAttack" xml:space="preserve">
     <value>兵器攻击</value>
   </data>
+  <data name="JingMai" xml:space="preserve">
+    <value>经脉</value>
+  </data>
+  <data name="PanelSize" xml:space="preserve">
+    <value>经脉盘大小</value>
+  </data>
+  <data name="Tool" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="SlotCount" xml:space="preserve">
+    <value>穴位数</value>
+  </data>
+  <data name="MaxLife" xml:space="preserve">
+    <value>最大生命力</value>
+  </data>
 </root>

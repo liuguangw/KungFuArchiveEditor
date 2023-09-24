@@ -187,6 +187,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 clear 的本地化字符串。
+        /// </summary>
+        public static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 delete 的本地化字符串。
         /// </summary>
         public static string Delete {
@@ -250,6 +259,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 jing mai 的本地化字符串。
+        /// </summary>
+        public static string JingMai {
+            get {
+                return ResourceManager.GetString("JingMai", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 level 的本地化字符串。
         /// </summary>
         public static string Level {
@@ -291,6 +309,15 @@ namespace KungFuArchiveEditor.Assets {
         public static string MaxHP {
             get {
                 return ResourceManager.GetString("MaxHP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 max life 的本地化字符串。
+        /// </summary>
+        public static string MaxLife {
+            get {
+                return ResourceManager.GetString("MaxLife", resourceCulture);
             }
         }
         
@@ -394,6 +421,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 panel size 的本地化字符串。
+        /// </summary>
+        public static string PanelSize {
+            get {
+                return ResourceManager.GetString("PanelSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 quanfa attack 的本地化字符串。
         /// </summary>
         public static string QuanfaAttack {
@@ -430,6 +466,15 @@ namespace KungFuArchiveEditor.Assets {
         }
         
         /// <summary>
+        ///   查找类似 slot count 的本地化字符串。
+        /// </summary>
+        public static string SlotCount {
+            get {
+                return ResourceManager.GetString("SlotCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 ability 的本地化字符串。
         /// </summary>
         public static string TabAbilityHeader {
@@ -453,6 +498,15 @@ namespace KungFuArchiveEditor.Assets {
         public static string TabRoleHeader {
             get {
                 return ResourceManager.GetString("TabRoleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 tool 的本地化字符串。
+        /// </summary>
+        public static string Tool {
+            get {
+                return ResourceManager.GetString("Tool", resourceCulture);
             }
         }
         

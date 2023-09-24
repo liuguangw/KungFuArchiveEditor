@@ -5,6 +5,17 @@ using System.Collections.Generic;
 namespace KungFuArchiveEditor.ViewModels;
 public class JingmaiViewModel : ViewModelBase
 {
+    public class MapSizeNode
+    {
+        private readonly int sizeValue;
+        public int Value => sizeValue;
+        public string Name => sizeValue.ToString();
+
+        public MapSizeNode(int value)
+        {
+            sizeValue = value;
+        }
+    }
     /// <summary>
     /// 经脉数据对象
     /// </summary>
@@ -21,28 +32,79 @@ public class JingmaiViewModel : ViewModelBase
     /// 当前选择的页(从0开始)
     /// </summary>
     private JValue? activePageObject = null;
-    private int mapSize = 1;
+    private int slotCount = 0;
+    private int placeCount = 6;
+    private MapSizeNode selectedMapSize;
 
-    public int MapSize
+    public MapSizeNode SelectedMapSize
     {
-        get => mapSize;
+        get => selectedMapSize;
         set
         {
-            if (value < 1)
+            if (value == null)
             {
                 return;
             }
-            if (value != mapSize)
+            var oldSize = selectedMapSize.Value;
+            var newSize = value.Value;
+            selectedMapSize = value;
+            if (oldSize != newSize)
             {
-                int oldValue = mapSize;
-                mapSize = value;
-                ProcessMapSizeChange(oldValue, value);
+                placeCount = CalcPlaceCount(newSize);
+                this.RaisePropertyChanged(nameof(MaxLife));
+                this.RaisePropertyChanged();
+                ProcessMapSizeChange(oldSize, newSize);
                 NotifyReloadCanvas();
             }
         }
     }
+    /// <summary>
+    /// 穴位个数,不包含丹田
+    /// </summary>
+    public int SlotCount
+    {
+        get => slotCount;
+        set
+        {
+            if (CheckRaiseAndSetIfChanged(ref slotCount, value))
+            {
+                this.RaisePropertyChanged(nameof(MaxLife));
+            }
+        }
+    }
+    /// <summary>
+    /// 最大生命力
+    /// </summary>
+    public int MaxLife => placeCount - slotCount;
 
     public Dictionary<(int, int, int), int> JingmaiMap { get; } = new();
+    public List<MapSizeNode> MapSizeSelection { get; } = new();
+    public JingmaiViewModel()
+    {
+        int i = 1;
+        selectedMapSize = new MapSizeNode(i);
+        MapSizeSelection.Add(selectedMapSize);
+        do
+        {
+            i++;
+            MapSizeSelection.Add(new MapSizeNode(i));
+        } while (i < 11);
+    }
+
+    /// <summary>
+    /// 根据经脉盘大小,计算位置总个数
+    /// </summary>
+    /// <param name="mapSize"></param>
+    /// <returns></returns>
+    private static int CalcPlaceCount(int mapSize)
+    {
+        int count = 0;
+        for (int i = 1; i <= mapSize; i++)
+        {
+            count += i * 6;
+        }
+        return count;
+    }
 
     /// <summary>
     /// 通知界面重绘
@@ -73,8 +135,15 @@ public class JingmaiViewModel : ViewModelBase
         if (mapSizeField is JValue mapSizeValue)
         {
             mapSizeObject = mapSizeValue;
-            mapSize = mapSizeValue.ToObject<int>();
-            this.RaisePropertyChanged(nameof(MapSize));
+            var mapSize = mapSizeValue.ToObject<int>();
+            foreach (var option in MapSizeSelection)
+            {
+                if (option.Value == mapSize)
+                {
+                    SelectedMapSize = option;
+                    break;
+                }
+            }
         }
         var pageNumField = jsonData["jingmai_page_num"];
         if (pageNumField is JValue pageNumberValue)
@@ -127,6 +196,7 @@ public class JingmaiViewModel : ViewModelBase
 
     public void RebuildJsonData()
     {
+        int mapSize = selectedMapSize.Value;
         if (mapSizeObject != null)
         {
             mapSizeObject.Value = mapSize;

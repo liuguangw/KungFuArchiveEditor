@@ -259,4 +259,22 @@
   <data name="AnqiAttack" xml:space="preserve">
     <value>anqi attack</value>
   </data>
+  <data name="JingMai" xml:space="preserve">
+    <value>jing mai</value>
+  </data>
+  <data name="PanelSize" xml:space="preserve">
+    <value>panel size</value>
+  </data>
+  <data name="Tool" xml:space="preserve">
+    <value>tool</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>clear</value>
+  </data>
+  <data name="SlotCount" xml:space="preserve">
+    <value>slot count</value>
+  </data>
+  <data name="MaxLife" xml:space="preserve">
+    <value>max life</value>
+  </data>
 </root>
