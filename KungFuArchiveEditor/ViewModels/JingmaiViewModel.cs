@@ -1,3 +1,4 @@
+using KungFuArchiveEditor.GameConfig;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -5,13 +6,16 @@ using System.Collections.Generic;
 namespace KungFuArchiveEditor.ViewModels;
 public class JingmaiViewModel : ViewModelBase
 {
-    public class MapSizeNode
+    /// <summary>
+    /// 经脉盘大小选项
+    /// </summary>
+    public class MapSizeOption
     {
         private readonly int sizeValue;
         public int Value => sizeValue;
         public string Name => sizeValue.ToString();
 
-        public MapSizeNode(int value)
+        public MapSizeOption(int value)
         {
             sizeValue = value;
         }
@@ -34,9 +38,9 @@ public class JingmaiViewModel : ViewModelBase
     private JValue? activePageObject = null;
     private int slotCount = 0;
     private int placeCount = 6;
-    private MapSizeNode selectedMapSize;
+    private MapSizeOption selectedMapSize;
 
-    public MapSizeNode SelectedMapSize
+    public MapSizeOption SelectedMapSize
     {
         get => selectedMapSize;
         set
@@ -45,15 +49,13 @@ public class JingmaiViewModel : ViewModelBase
             {
                 return;
             }
-            var oldSize = selectedMapSize.Value;
             var newSize = value.Value;
-            selectedMapSize = value;
-            if (oldSize != newSize)
+            if (selectedMapSize.Value != newSize)
             {
-                placeCount = CalcPlaceCount(newSize);
-                this.RaisePropertyChanged(nameof(MaxLife));
-                this.RaisePropertyChanged();
-                ProcessMapSizeChange(oldSize, newSize);
+                selectedMapSize = value;
+                OnMapSizeChange();
+                //重新设置json数据
+                RebuildJsonData();
                 NotifyReloadCanvas();
             }
         }
@@ -77,18 +79,24 @@ public class JingmaiViewModel : ViewModelBase
     /// </summary>
     public int MaxLife => placeCount - slotCount;
 
-    public Dictionary<(int, int, int), int> JingmaiMap { get; } = new();
-    public List<MapSizeNode> MapSizeSelection { get; } = new();
+    public Dictionary<JingmaiNodePos, JingmaiNodeConfig> JingmaiMap { get; } = new();
+    public List<MapSizeOption> MapSizeSelection { get; } = new();
     public JingmaiViewModel()
     {
         int i = 1;
-        selectedMapSize = new MapSizeNode(i);
+        selectedMapSize = new MapSizeOption(i);
         MapSizeSelection.Add(selectedMapSize);
         do
         {
             i++;
-            MapSizeSelection.Add(new MapSizeNode(i));
+            MapSizeSelection.Add(new MapSizeOption(i));
         } while (i < 11);
+    }
+
+    private void OnMapSizeChange()
+    {
+        this.RaisePropertyChanged(nameof(SelectedMapSize));
+        placeCount = CalcPlaceCount(selectedMapSize.Value);
     }
 
     /// <summary>
@@ -114,21 +122,6 @@ public class JingmaiViewModel : ViewModelBase
         this.RaisePropertyChanged(nameof(JingmaiMap));
     }
 
-    private void ProcessMapSizeChange(int oldValue, int newValue)
-    {
-        if (mapSizeObject != null)
-        {
-            mapSizeObject.Value = newValue;
-        }
-        //扩容模式
-        if (newValue > oldValue)
-        {
-            return;
-        }
-        //缩减模式, 重新设置json数据
-        RebuildJsonData();
-    }
-
     public void LoadJingmaiData(JObject jsonData)
     {
         var mapSizeField = jsonData["jingmai_map_size"];
@@ -140,7 +133,8 @@ public class JingmaiViewModel : ViewModelBase
             {
                 if (option.Value == mapSize)
                 {
-                    SelectedMapSize = option;
+                    selectedMapSize = option;
+                    OnMapSizeChange();
                     break;
                 }
             }
@@ -174,38 +168,110 @@ public class JingmaiViewModel : ViewModelBase
     {
         foreach (var keyValuePair in mapData)
         {
-            var posValues = keyValuePair.Key.Split('|');
-            if (posValues.Length < 3)
+            var posStr = keyValuePair.Key;
+            if (!JingmaiNodePos.TryParse(posStr, out var nodePos))
             {
                 continue;
             }
-            var pos = (int.Parse(posValues[0]), int.Parse(posValues[1]), int.Parse(posValues[2]));
             var detailObj = keyValuePair.Value;
             if (detailObj is JArray detailArr)
             {
-                if (detailArr.Count < 1)
+                if (detailArr.Count < 2)
                 {
                     continue;
                 }
                 var typeNode = detailArr[0];
-                var typeValue = typeNode.ToObject<int>();
-                JingmaiMap.Add(pos, typeValue);
+                var nodeType = typeNode.ToObject<int>();
+                var pageConfigNodes = detailArr[1];
+                if (pageConfigNodes is JArray pageConfigArr)
+                {
+                    var pageLinkConfigs = ParsePageLinkConfigs(pageConfigArr);
+                    JingmaiMap.Add(nodePos, new(nodeType, pageLinkConfigs));
+                }
             }
         }
+    }
+
+    private static JingmaiNodeLinkInfo[] ParsePageLinkConfigs(JArray pageConfigArr)
+    {
+        var pageLinkConfigs = new JingmaiNodeLinkInfo[pageConfigArr.Count];
+        for (int i = 0; i < pageConfigArr.Count; i++)
+        {
+            var pageConfigNode = pageConfigArr[i];
+            if (pageConfigNode is JArray configNodes)
+            {
+                if (configNodes.Count < 3)
+                {
+                    continue;
+                }
+                var lineIndex = configNodes[0].ToObject<int>();
+                if (lineIndex < 0)
+                {
+                    pageLinkConfigs[i] = JingmaiNodeLinkInfo.NullLink();
+                    continue;
+                }
+                JingmaiNodePos? destPos = null;
+                var destPosStr = configNodes[1].ToObject<string>();
+                if (JingmaiNodePos.TryParse(destPosStr, out var tmpPos))
+                {
+                    destPos = tmpPos;
+                }
+                //
+                JingmaiNodePos[]? srcPosList = null;
+                var srcPosNodes = configNodes[2];
+                if (srcPosNodes is JArray srcPosNodesArr)
+                {
+                    if (srcPosNodesArr.Count > 0)
+                    {
+                        srcPosList = new JingmaiNodePos[srcPosNodesArr.Count];
+                        for (var j = 0; j < srcPosNodesArr.Count; j++)
+                        {
+                            var srcPosStr = srcPosNodesArr[j].ToObject<string>();
+                            if (JingmaiNodePos.TryParse(srcPosStr, out var srcPos))
+                            {
+                                srcPosList[j] = srcPos;
+                            }
+                        }
+                    }
+                    pageLinkConfigs[i] = new(lineIndex, destPos, srcPosList);
+                }
+
+            }
+        }
+        return pageLinkConfigs;
     }
 
     public void RebuildJsonData()
     {
         int mapSize = selectedMapSize.Value;
+        //判断连线是否超出经脉盘,防住经脉盘缩小时出现问题
+        bool isOutOfMap = false;
+        foreach (var nodeConfig in JingmaiMap.Values)
+        {
+            if (nodeConfig.IsOutOfMap(mapSize))
+            {
+                isOutOfMap = true;
+                break;
+            }
+        }
+        var zeroPos = JingmaiNodePos.Zero();
+        var zeroPosConfig = JingmaiMap[zeroPos];
+        int pageNum = zeroPosConfig.PageLinkConfigs.Length;
+        //连线超出范围则取消所有页的连线
+        if (isOutOfMap)
+        {
+            pageNum = 1;
+        }
+
         if (mapSizeObject != null)
         {
             mapSizeObject.Value = mapSize;
         }
         if (pageNumObject != null)
         {
-            pageNumObject.Value = 1;
+            pageNumObject.Value = pageNum;
         }
-        if (activePageObject != null)
+        if (isOutOfMap && activePageObject != null)
         {
             activePageObject.Value = 0;
         }
@@ -213,6 +279,7 @@ public class JingmaiViewModel : ViewModelBase
         {
             return;
         }
+        //清理json对象中的所有key
         //不能遍历集合的时候修改集合
         //先取出key再删除
         var keyList = new List<string>();
@@ -229,7 +296,7 @@ public class JingmaiViewModel : ViewModelBase
         {
             for (int r = rBegin; r <= mapSize; r++)
             {
-                SetJingmaiMapData(jingmaiMapData, q, r);
+                SetJingmaiMapData(jingmaiMapData, q, r, isOutOfMap);
                 //Debug.Write($"q={q},r={r} ");
             }
             //Debug.WriteLine("\n=====");
@@ -241,7 +308,7 @@ public class JingmaiViewModel : ViewModelBase
         {
             for (int r = rBegin; r <= rEnd; r++)
             {
-                SetJingmaiMapData(jingmaiMapData, q, r);
+                SetJingmaiMapData(jingmaiMapData, q, r, isOutOfMap);
                 //Debug.Write($"q={q},r={r} ");
             }
             //Debug.WriteLine("\n=====");
@@ -249,42 +316,25 @@ public class JingmaiViewModel : ViewModelBase
         }
     }
 
-    private void SetJingmaiMapData(JObject mapObject, int q, int r)
+    private void SetJingmaiMapData(JObject mapObject, int q, int r, bool isOutOfMap)
     {
-        int s = -q - r;
-        var mapKey = (q, r, s);
-        if (mapKey == (0, 0, 0))
-        {
-            //丹田
-            SetJingmaiType(mapObject, mapKey, 1);
-            return;
-
-        }
-        if (!JingmaiMap.TryGetValue(mapKey, out int nodeType))
+        var posKey = new JingmaiNodePos(q, r);
+        if (!JingmaiMap.TryGetValue(posKey, out var mapNodeConfig))
         {
             return;
         }
-        //3种穴位
-        if (nodeType == 2 || nodeType == 3 || nodeType == 4)
+        var nodeConfig = mapNodeConfig;
+        if (isOutOfMap)
         {
-            SetJingmaiType(mapObject, mapKey, nodeType);
+            //去掉连线数据
+            var linkConfigs = new JingmaiNodeLinkInfo[]
+            {
+                JingmaiNodeLinkInfo.NullLink()
+            };
+            nodeConfig = new(mapNodeConfig.NodeType, linkConfigs);
         }
-    }
-
-    private static void SetJingmaiType(JObject mapObject, (int, int, int) mapKey, int nodeType)
-    {
-        var (q, r, s) = mapKey;
-        var mapKeyStr = $"{q}|{r}|{s}";
-        var mapValue = new JArray() {
-            new JValue(nodeType),
-            new JArray() {
-                new JArray() {
-                    new JValue(-1),
-                    new JValue(string.Empty),
-                    new JArray() {}
-                }
-            }
-        };
+        var mapKeyStr = posKey.ToString();
+        var mapValue = nodeConfig.ToJsonArray();
         mapObject[mapKeyStr] = mapValue;
     }
 }

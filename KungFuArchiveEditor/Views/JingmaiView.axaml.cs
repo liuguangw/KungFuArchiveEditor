@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using KungFuArchiveEditor.GameConfig;
 using KungFuArchiveEditor.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ public partial class JingmaiView : UserControl
     /// <summary>
     /// 绘制的穴位图标记录 posKey => (nodeType, image)
     /// </summary>
-    private readonly Dictionary<(int, int, int), (int, Image)> ImageNodes = new();
+    private readonly Dictionary<JingmaiNodePos, (int, Image)> ImageNodes = new();
     /// <summary>
     /// 当前选择的工具类型
     /// </summary>
@@ -130,7 +131,7 @@ public partial class JingmaiView : UserControl
         }
     }
 
-    private void DrawMap(int mapSize, Dictionary<(int, int, int), int> mapData)
+    private void DrawMap(int mapSize, Dictionary<JingmaiNodePos, JingmaiNodeConfig> mapData)
     {
         //Debug.WriteLine($"DrawMap mapSize={mapSize}");
         MainCanvas.Height = (mapSize * 2 + 1) * Math.Sqrt(3) * nodeSize;
@@ -138,6 +139,7 @@ public partial class JingmaiView : UserControl
         //清理
         MainCanvas.Children.Clear();
         ImageNodes.Clear();
+        //绘制时计算穴位数量
         JingmaiVm!.SlotCount = 0;
         int rBegin = 0;
         for (int q = -mapSize; q <= 0; q++)
@@ -191,7 +193,7 @@ public partial class JingmaiView : UserControl
     /// <param name="q"></param>
     /// <param name="r"></param>
     /// <param name="mapData">参考数据,根据此数据判断当前坐标是否是穴位</param>
-    private void DrawPolygon(Canvas canvas, int mapSize, int q, int r, Dictionary<(int, int, int), int> mapData)
+    private void DrawPolygon(Canvas canvas, int mapSize, int q, int r, Dictionary<JingmaiNodePos, JingmaiNodeConfig> mapData)
     {
         var polygon = BuildPolygon();
         //六边形的左上角的坐标
@@ -203,30 +205,30 @@ public partial class JingmaiView : UserControl
         Canvas.SetTop(polygon, y);
         canvas.Children.Add(polygon);
         //
-        int s = -q - r;
-        var posKey = (q, r, s);
+        var posKey = new JingmaiNodePos(q, r);
         AttachEventAction(canvas, polygon, x, y, posKey);
-        //
-        /*var label = BuildLabel($"{q}|{r}|{s}");
+        //debug
+        /*var label = BuildLabel(posKey.ToString());
         Canvas.SetLeft(label, x);
         Canvas.SetTop(label, y + (Math.Sqrt(3) * nodeSize - label.FontSize) / 2);
         canvas.Children.Add(label);
         AttachEventAction(canvas, polygon, label, x, y, posKey);*/
         //丹田
-        if (q == 0 && r == 0)
+        if (posKey.IsZero())
         {
             var image = DrawIconImage(canvas, x, y, 1);
-            ImageNodes.Add((q, r, s), (1, image));
+            ImageNodes.Add(posKey, (1, image));
             AttachEventAction(canvas, polygon, image, x, y, posKey);
         }
-        else if (mapData.TryGetValue((q, r, s), out var nodeType))
+        else if (mapData.TryGetValue(posKey, out var nodeConfig))
         {
+            var nodeType = nodeConfig.NodeType;
             if (nodeType == 2 || nodeType == 3 || nodeType == 4)
             {
                 var image = DrawIconImage(canvas, x, y, nodeType);
-                ImageNodes.Add((q, r, s), (nodeType, image));
+                ImageNodes.Add(posKey, (nodeType, image));
                 AttachEventAction(canvas, polygon, image, x, y, posKey);
-                JingmaiVm!.SlotCount += 1;
+                JingmaiVm!.SlotCount++;
             }
         }
     }
@@ -239,25 +241,59 @@ public partial class JingmaiView : UserControl
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <param name="posKey"></param>
-    private void OnPosTap(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey)
+    private void OnPosTap(Canvas canvas, Polygon polygon, double x, double y, JingmaiNodePos posKey)
     {
         //Debug.WriteLine($"{posKey.Item1}|{posKey.Item2}|{posKey.Item3}");
         if (JingmaiVm == null)
         {
             return;
         }
-        if (posKey == (0, 0, 0))
+        if (posKey.IsZero())
         {
             return;
         }
         ReplaceIconImage(canvas, polygon, x, y, posKey, currentToolType);
-        if (currentToolType != 0)
+        //修改类型
+        if (JingmaiVm.JingmaiMap.TryGetValue(posKey, out var nodeConfig))
         {
-            JingmaiVm.JingmaiMap[posKey] = currentToolType;
+            if (nodeConfig.NodeType == currentToolType)
+            {
+                return;
+            }
+            nodeConfig.NodeType = currentToolType;
+            if (currentToolType == 0)
+            {
+                //判断是否为孤立点
+                var isNullLink = true;
+                foreach (var linkConfig in nodeConfig.PageLinkConfigs)
+                {
+                    if (linkConfig.LineIndex >= 0)
+                    {
+                        isNullLink = false;
+                        break;
+                    }
+                }
+                if (isNullLink)
+                {
+                    JingmaiVm.JingmaiMap.Remove(posKey);
+                }
+            }
         }
-        else
+        //新添加的穴位
+        else if (currentToolType > 0)
         {
-            JingmaiVm.JingmaiMap.Remove(posKey);
+            //计算总页数
+            var zeroPos = JingmaiNodePos.Zero();
+            var zeroPosConfig = JingmaiVm.JingmaiMap[zeroPos];
+            int pageNum = zeroPosConfig.PageLinkConfigs.Length;
+            //构建节点对象
+            var linkConfigs = new JingmaiNodeLinkInfo[pageNum];
+            for (int i = 0; i < pageNum; i++)
+            {
+                linkConfigs[i] = JingmaiNodeLinkInfo.NullLink();
+            }
+            JingmaiVm.JingmaiMap.Add(posKey, new(currentToolType, linkConfigs));
+
         }
         JingmaiVm.RebuildJsonData();
     }
@@ -294,7 +330,7 @@ public partial class JingmaiView : UserControl
     /// <param name="y"></param>
     /// <param name="posKey"></param>
     /// <param name="nodeType"></param>
-    private void ReplaceIconImage(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey, int nodeType)
+    private void ReplaceIconImage(Canvas canvas, Polygon polygon, double x, double y, JingmaiNodePos posKey, int nodeType)
     {
         //图标已经存在
         if (ImageNodes.TryGetValue(posKey, out var posItem))
@@ -342,7 +378,7 @@ public partial class JingmaiView : UserControl
         return item;
     }
 
-    private void AttachEventAction(Canvas canvas, Polygon polygon, double x, double y, (int, int, int) posKey)
+    private void AttachEventAction(Canvas canvas, Polygon polygon, double x, double y, JingmaiNodePos posKey)
     {
         AttachEventAction(canvas, polygon, polygon, x, y, posKey);
     }
@@ -357,7 +393,7 @@ public partial class JingmaiView : UserControl
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <param name="posKey"></param>
-    private void AttachEventAction(Canvas canvas, Polygon polygon, InputElement element, double x, double y, (int, int, int) posKey)
+    private void AttachEventAction(Canvas canvas, Polygon polygon, InputElement element, double x, double y, JingmaiNodePos posKey)
     {
         void enteredAction()
         {
