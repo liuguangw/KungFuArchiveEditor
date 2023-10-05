@@ -6,7 +6,7 @@
 
 ### 编译方式
 
-用 [Visual Studo](https://visualstudio.microsoft.com/zh-hans/vs/) 编译 **KungFuArchiveEditor.Desktop** 项目即可。
+用 [Visual Studio](https://visualstudio.microsoft.com/zh-hans/vs/) 编译 **KungFuArchiveEditor.Desktop** 项目即可。
 
 当然也可以使用命令行来编译，系统需要安装 **[.NET sdk](https://dotnet.microsoft.com/zh-cn/download/dotnet)** 6.0或者更高版本。
 

@@ -53,12 +53,20 @@ public static class ArchiveTool
         return await LoadArchiveAsync(stream, fileType);
     }
 
+    /// <summary>
+    /// 根据文件类型加载存档
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="fileType"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private static async Task<JObject> LoadArchiveAsync(Stream stream, ArchiveFileType fileType)
     {
         if (fileType == ArchiveFileType.Unknown)
         {
             throw new Exception("unknown archive file type");
         }
+        //json字符串内容
         string fileContent;
         if (fileType == ArchiveFileType.Json)
         {
@@ -145,6 +153,14 @@ public static class ArchiveTool
         await SaveArchiveAsync(stream, fileType, jsonData);
     }
 
+    /// <summary>
+    /// 根据文件类型保存存档
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="fileType"></param>
+    /// <param name="jsonData"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private static async Task SaveArchiveAsync(Stream stream, ArchiveFileType fileType, JObject jsonData)
     {
         if (fileType == ArchiveFileType.Unknown)
@@ -162,25 +178,43 @@ public static class ArchiveTool
         }
         else
         {
-            await SaveArchiveDataAsync(stream, jsonContent);
+            var packData = PackJsonContent(jsonContent);
+            await SaveArchiveDataAsync(stream, packData);
         }
     }
 
-    private static async Task SaveArchiveDataAsync(Stream stream, string jsonContent)
+    /// <summary>
+    /// json字符串打包
+    /// </summary>
+    /// <param name="jsonContent"></param>
+    /// <returns></returns>
+    private static byte[] PackJsonContent(string jsonContent)
     {
-        var strLength = jsonContent.Length;
-        var cap = 8 + 2 * (strLength + 1);
+        int strLength = jsonContent.Length;
+        int cap = 8 + 2 * (strLength + 1);
         using var dataStream = new MemoryStream(cap);
-        using var binWriter = new BinaryWriter(dataStream);
-        binWriter.Write(cap - 4);
-        binWriter.Write(~strLength);
-        var encoding = Encoding.GetEncoding("utf-16");
-        var strData = encoding.GetBytes(jsonContent);
-        binWriter.Write(strData);
-        binWriter.Write(new byte[] { 0, 0 });
-        var packData = dataStream.ToArray();
+        using (var writer = new BinaryWriter(dataStream))
+        {
+            //后面的字节数
+            writer.Write(cap - 4);
+            //字符串长度
+            writer.Write(~strLength);
+            //写入字符串
+            var encoding = Encoding.GetEncoding("utf-16");
+            var strData = encoding.GetBytes(jsonContent);
+            writer.Write(strData);
+            //最后两个字节填充0
+            writer.Write(new byte[] { 0, 0 });
+        }
+        return dataStream.ToArray();
+    }
+
+    private static async Task SaveArchiveDataAsync(Stream stream, byte[] packData)
+    {
+
         var packIndex = 0;
         using var fileDataWriter = new BinaryWriter(stream);
+        //分段写入
         while (packIndex < packData.Length)
         {
             packIndex += await SaveArchiveDataNodeAsync(fileDataWriter, packData[packIndex..]);
@@ -189,8 +223,11 @@ public static class ArchiveTool
 
     private static async Task<int> SaveArchiveDataNodeAsync(BinaryWriter writer, byte[] packData)
     {
+        //每次最多处理的字节数
         int procLimit = 0x020000;
+        //实际处理的字节数
         var procCount = Math.Min(packData.Length, procLimit);
+        //gzip压缩
         using var destStream = new MemoryStream();
         using (var compressor = new GZipStream(destStream, CompressionMode.Compress))
         {
@@ -199,7 +236,7 @@ public static class ArchiveTool
         }
         var compressedData = destStream.ToArray();
         compressedData[9] = 0x0B;
-        //
+        //写入数据结构
         uint magic = 0x9E2A83C1;
         int emptyValue = 0;
         writer.Write(magic);
