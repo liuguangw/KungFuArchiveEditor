@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KungFuArchiveEditor", "Kung
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KungFuArchiveEditor.Desktop", "KungFuArchiveEditor.Desktop\KungFuArchiveEditor.Desktop.csproj", "{2FB33815-72A4-40A6-B153-A5869E851D1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextGenerator", "TextGenerator\TextGenerator.csproj", "{8C80B98B-7B1A-4E06-BC94-F3FF8424BFEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2FB33815-72A4-40A6-B153-A5869E851D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FB33815-72A4-40A6-B153-A5869E851D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FB33815-72A4-40A6-B153-A5869E851D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C80B98B-7B1A-4E06-BC94-F3FF8424BFEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C80B98B-7B1A-4E06-BC94-F3FF8424BFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C80B98B-7B1A-4E06-BC94-F3FF8424BFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C80B98B-7B1A-4E06-BC94-F3FF8424BFEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

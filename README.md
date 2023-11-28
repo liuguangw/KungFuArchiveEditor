@@ -12,7 +12,7 @@
 
 ```shell
 # 用这个命令就可以编译
-dotnet build KungFuArchiveEditor.Desktop -c Release
+dotnet build KungFuArchiveEditor.Desktop -c Release --no-self-contained --os win
 ```
 
 编译后的程序在 *KungFuArchiveEditor.Desktop/bin* 目录中。
