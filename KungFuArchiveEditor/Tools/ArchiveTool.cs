@@ -127,18 +127,6 @@ public static class ArchiveTool
         await decompressor.CopyToAsync(outStream);
         await decompressor.FlushAsync();
     }
-    /// <summary>
-    /// 保存存档
-    /// </summary>
-    /// <param name="file"></param>
-    /// <param name="jsonData"></param>
-    /// <returns></returns>
-    public static async Task SaveArchiveAsync(FileInfo file, JObject jsonData)
-    {
-        var fileType = GetArchiveFileType(file.Name);
-        using var stream = file.OpenWrite();
-        await SaveArchiveAsync(stream, fileType, jsonData);
-    }
 
     /// <summary>
     /// 保存存档
