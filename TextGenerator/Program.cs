@@ -209,7 +209,7 @@ internal class Program
             {
                 name = name[..(name.Length-1)];
             }
-            var equipType = fields[15];
+            var equipType = fields[16];
             var typeNumber = ParseEquipType(equipType);
             return $"{classID} {typeNumber} {name}";
         }
